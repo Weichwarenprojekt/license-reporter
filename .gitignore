@@ -1,0 +1,4 @@
+# Custom ignores
+node_modules
+dist
+.idea

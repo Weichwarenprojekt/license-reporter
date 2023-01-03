@@ -1,0 +1,35 @@
+{
+  "name": "wp-license-reporter",
+  "version": "0.0.0",
+  "description": "A tool that analyzes node modules and extracts the license information into a json file that can be used for rendering the third party software.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "cli": "node ./dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "wp-license-reporter": "./dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Weichwarenprojekt/wp-license-reporter.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Weichwarenprojekt/wp-license-reporter/issues"
+  },
+  "homepage": "https://github.com/Weichwarenprojekt/wp-license-reporter#readme",
+  "dependencies": {
+    "commander": "^9.4.1",
+    "figlet": "^1.5.2",
+    "prettier": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/figlet": "^1.5.5",
+    "@types/node": "^18.11.18",
+    "typescript": "^4.9.4"
+  }
+}

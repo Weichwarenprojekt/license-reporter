@@ -1,10 +1,9 @@
 import { OptionValues } from "commander";
+import { loadConfiguration } from "./configuration";
 
 /**
  * Analyzes the node modules and generates a report
  */
-export function reportLicenses(options: OptionValues) {
-    console.log(options.config);
-    console.log("Parsing licenses...");
-    console.log("Generating output file...");
+export async function reportLicenses(options: OptionValues): Promise<void> {
+    const config = await loadConfiguration(options);
 }

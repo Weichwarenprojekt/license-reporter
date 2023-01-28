@@ -2,6 +2,20 @@ import { OptionValues } from "commander";
 import path from "path";
 
 /**
+ * The package information for a single package
+ */
+export interface IPackageInfo {
+    /** The name of the package */
+    name: string;
+    /** The url to the homepage/repo of the package */
+    url: string;
+    /** The name of the license */
+    licenseName: string;
+    /** The license text */
+    licenseText: string;
+}
+
+/**
  * The parameters that can be configured within the configuration file
  */
 export interface IReporterConfiguration {
@@ -11,6 +25,8 @@ export interface IReporterConfiguration {
     root: string;
     /** The path to the output file */
     output: string;
+    /** The overrides for single packages */
+    overrides: Partial<IPackageInfo>[];
 }
 
 /**
@@ -29,6 +45,7 @@ export const defaultConfiguration: IReporterCliConfiguration = {
     recursive: true,
     root: process.cwd(),
     output: `${process.cwd()}/3rdpartylicenses.json`,
+    overrides: [],
 };
 
 /**

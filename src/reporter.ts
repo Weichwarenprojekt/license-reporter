@@ -1,25 +1,8 @@
 import { OptionValues } from "commander";
-import { IReporterConfiguration, loadConfiguration } from "./configuration";
+import { IPackageInfo, IReporterConfiguration, loadConfiguration } from "./configuration";
 import glob from "glob";
 import path from "path";
 import fs from "fs";
-
-/**
- * The package information for a single package
- */
-export interface IPackageInfo {
-    /** The name of the package */
-    name: string;
-    /** The url to the homepage/repo of the package */
-    url: string;
-    /** The license information */
-    license: {
-        /** The name of the license */
-        name: string;
-        /** The license text */
-        text: string;
-    };
-}
 
 /**
  * Analyzes the node modules and generates a report
@@ -27,8 +10,10 @@ export interface IPackageInfo {
 export async function reportLicenses(options: OptionValues): Promise<void> {
     const config = await loadConfiguration(options);
     const packages = findPackages(config);
-    const infos = extractInformation(packages);
-    exportInformation(config, infos);
+    const rawInfo = extractInformation(packages);
+    const preparedInfo = prepareInformation(config, rawInfo);
+    validateInformation(preparedInfo);
+    exportInformation(config, preparedInfo);
 }
 
 /**
@@ -47,11 +32,12 @@ function findPackages(config: IReporterConfiguration): string[] {
  * Extract the information of the packages
  * @param packages The paths to each third party package
  */
-function extractInformation(packages: string[]): IPackageInfo[] {
-    const infos: IPackageInfo[] = [];
+function extractInformation(packages: string[]): Map<string, IPackageInfo> {
+    const infos = new Map<string, IPackageInfo>();
     for (const packagePath of packages) {
         try {
-            infos.push(extractPackageInformation(packagePath));
+            const packageInfo = extractPackageInformation(packagePath);
+            infos.set(packageInfo.name, packageInfo);
         } catch (e) {
             console.error(`Could not extract license information from "${packagePath}".`);
             console.error(e);
@@ -72,10 +58,8 @@ function extractPackageInformation(packagePath: string): IPackageInfo {
     const packageInfo: IPackageInfo = {
         name: packageJson.name,
         url: packageJson.homepage,
-        license: {
-            name: packageJson.license,
-            text: "",
-        },
+        licenseName: packageJson.license,
+        licenseText: "",
     };
     if (!packageInfo.name) packageInfo.name = path.basename(packageDirectory);
     packageInfo.url ??=
@@ -88,8 +72,51 @@ function extractPackageInformation(packagePath: string): IPackageInfo {
     let licenseFiles = glob.sync("licens*", options);
     if (licenseFiles.length === 0) licenseFiles = glob.sync("copyin*", options);
     const licensePath = licenseFiles[0];
-    if (licensePath) packageInfo.license.text = fs.readFileSync(path.resolve(packageDirectory, licensePath), "utf-8");
+    if (licensePath) packageInfo.licenseText = fs.readFileSync(path.resolve(packageDirectory, licensePath), "utf-8");
     return packageInfo;
+}
+
+/**
+ * Prepare the raw information
+ * @param config The reporter configuration
+ * @param rawInfo The raw package information
+ */
+function prepareInformation(config: IReporterConfiguration, rawInfo: Map<string, IPackageInfo>): IPackageInfo[] {
+    // Add the data from the overrides
+    for (const override of config.overrides) {
+        const packageName = override.name; // Ignore overrides that don't have a name set
+        if (!packageName) continue;
+        const raw = rawInfo.get(packageName);
+        if (raw) {
+            rawInfo.set(packageName, Object.assign(raw, override));
+        } else {
+            rawInfo.set(packageName, {
+                name: override.name ?? "",
+                url: override.url ?? "",
+                licenseName: override.licenseName ?? "",
+                licenseText: override.licenseText ?? "",
+            });
+        }
+    }
+
+    // Sort alphabetically
+    const infos = Array.from(rawInfo.values());
+    infos.sort((a, b) => a.name.localeCompare(b.name));
+    return infos;
+}
+
+/**
+ * Validate the package information and notify the user if information is missing
+ * @param infos The package information
+ */
+function validateInformation(infos: IPackageInfo[]): void {
+    const hint =
+        'You can add "overrides" to the reporter configuration to manually complete the information of a package.';
+    for (const info of infos) {
+        if (!info.url) console.warn(`No "url" was found for the package "${info.name}". ${hint}`);
+        if (!info.licenseName) console.warn(`No "licenseName" was found for the package "${info.name}". ${hint}`);
+        if (!info.licenseText) console.warn(`No "licenseText" was found for the package "${info.name}". ${hint}`);
+    }
 }
 
 /**

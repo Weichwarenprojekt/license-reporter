@@ -1,8 +1,7 @@
 import { IReporterConfiguration } from "./src/configuration";
 
-const config: IReporterConfiguration = {
-    root: "Whatever",
-    recursive: false,
+const config: Partial<IReporterConfiguration> = {
+    recursive: true,
 };
 
 export default config;

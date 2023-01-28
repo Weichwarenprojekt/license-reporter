@@ -21,4 +21,5 @@ program
         defaultConfiguration.recursive,
     )
     .option("--root <value>", "The path to the root directory.", defaultConfiguration.root)
+    .option("--output <value>", "The path to the output file.", defaultConfiguration.output)
     .parse(process.argv);

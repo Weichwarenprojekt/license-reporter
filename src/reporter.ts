@@ -28,7 +28,7 @@ export async function reportLicenses(options: OptionValues): Promise<void> {
     const config = await loadConfiguration(options);
     const packages = findPackages(config);
     const infos = extractInformation(packages);
-    console.log(infos);
+    exportInformation(config, infos);
 }
 
 /**
@@ -90,4 +90,14 @@ function extractPackageInformation(packagePath: string): IPackageInfo {
     const licensePath = licenseFiles[0];
     if (licensePath) packageInfo.license.text = fs.readFileSync(path.resolve(packageDirectory, licensePath), "utf-8");
     return packageInfo;
+}
+
+/**
+ * Export the package information into the output file
+ * @param config The reporter configuration
+ * @param infos The information
+ */
+function exportInformation(config: IReporterConfiguration, infos: IPackageInfo[]): void {
+    fs.mkdirSync(path.dirname(config.output), { recursive: true });
+    fs.writeFileSync(config.output, JSON.stringify(infos, null, 4));
 }

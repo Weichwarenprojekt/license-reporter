@@ -9,6 +9,8 @@ export interface IReporterConfiguration {
     recursive: boolean;
     /** The path to the root directory */
     root: string;
+    /** The path to the output file */
+    output: string;
 }
 
 /**
@@ -26,6 +28,7 @@ export const defaultConfiguration: IReporterCliConfiguration = {
     config: `${process.cwd()}/license-reporter.config`,
     recursive: true,
     root: process.cwd(),
+    output: `${process.cwd()}/3rdpartylicenses.json`,
 };
 
 /**

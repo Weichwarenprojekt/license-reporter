@@ -23,9 +23,25 @@ export async function reportLicenses(options: OptionValues): Promise<void> {
 function findPackages(config: IReporterConfiguration): string[] {
     let globPath = config.recursive ? path.resolve(config.root, "**/") : config.root;
     globPath = path.resolve(globPath, "node_modules", "**", "package.json");
+
     // Make sure to convert backslashes to forward slashes as glob only works with forward slashes
     globPath = globPath.replace(/\\/g, "/");
-    return glob.sync(globPath);
+    const packages = glob.sync(globPath);
+
+    // Sort out nested package.jsons if parent directory already contains a package.json
+    let currentDirectory = packages.length > 0 ? `${path.dirname(packages[0])}/` : "";
+    for (let i = 1; i < packages.length; ) {
+        if (packages[i].includes(currentDirectory)) {
+            packages.splice(i, 1);
+        } else if (i > 1 && packages[i - 2].includes(currentDirectory)) {
+            packages.splice(i - 2, 1);
+            i--;
+        } else {
+            currentDirectory = `${path.dirname(packages[i])}/`;
+            i++;
+        }
+    }
+    return packages;
 }
 
 /**
@@ -64,6 +80,7 @@ function extractPackageInformation(packagePath: string): IPackageInfo {
     if (!packageInfo.name) packageInfo.name = path.basename(packageDirectory);
     packageInfo.url ??=
         typeof packageJson.repository === "string" ? packageJson.repository : packageJson.repository?.url;
+    packageInfo.url ??= "";
     packageInfo.url = packageInfo.url.replace(/^git\+/, "");
     packageInfo.url = packageInfo.url.replace(/^git:\/\//, "https://");
 

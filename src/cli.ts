@@ -12,9 +12,9 @@ const program = new Command();
  * Executes the cli
  * @param args The arguments for the cli
  */
-export async function cli(args: string[] = process.argv): Promise<void> {
+export async function cli(args: string[]): Promise<void> {
     await program
-        .version(process.env.npm_package_version ?? "")
+        .version(process.env.npm_package_version ?? "0.0.0")
         .description(
             `${name}\nA tool that analyzes node modules and extracts the license information into a json file that can be used for rendering the third party software.`,
         )

@@ -62,7 +62,7 @@ export async function loadConfiguration(options: OptionValues): Promise<IReporte
             console.warn('The specified configuration does not export a "configuration"');
         return Object.assign(cliConfig, configImport.configuration);
     } catch (e) {
-        console.error("Error while loading the configuration file!");
-        throw e;
+        console.warn("Could not find a configuration file!");
+        return cliConfig;
     }
 }

@@ -7,7 +7,8 @@
   "scripts": {
     "cli": "node ./src/index.js",
     "help": "node ./src/index.js --help",
-    "test": "jest"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "bin": {
     "wp-license-reporter": "./src/index.js"

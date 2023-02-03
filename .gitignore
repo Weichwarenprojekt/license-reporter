@@ -1,4 +1,5 @@
 # Custom ignores
 node_modules
 dist
+coverage
 .idea

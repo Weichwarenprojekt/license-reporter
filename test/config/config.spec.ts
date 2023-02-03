@@ -8,7 +8,6 @@ jest.mock("fs", () => {
 });
 const fsMocked = jest.mocked(fs);
 const consoleWarn = jest.spyOn(console, "warn").mockImplementation(() => {});
-const consoleError = jest.spyOn(console, "error").mockImplementation(() => {});
 
 describe('Parameter "--config"', () => {
     beforeEach(() => {
@@ -21,29 +20,30 @@ describe('Parameter "--config"', () => {
     });
 
     it("loads the config specified", async () => {
-        await executeCli("--root", __dirname, "--config", "differentConfig");
+        await executeCli("--root", __dirname, "--config", "different.config");
         expect(fsMocked.writeFileSync).toBeCalledWith(path.resolve(__dirname, "differentConfig.json"), "[]");
     });
 
     it("also works with JS files", async () => {
-        await executeCli("--root", __dirname, "--config", "jsConfig");
+        await executeCli("--root", __dirname, "--config", "js.config");
         expect(fsMocked.writeFileSync).toBeCalledWith(path.resolve(__dirname, "jsConfig.json"), "[]");
     });
 
     it('notifies if specified config does not export "configuration"', async () => {
-        await executeCli("--root", __dirname, "--config", "wrongConfig");
+        await executeCli("--root", __dirname, "--config", "wrong.config");
         expect(consoleWarn).toBeCalledWith('The specified configuration does not export a "configuration"');
         // Uses default config
         expect(fsMocked.writeFileSync).toBeCalledWith(path.resolve(__dirname, "3rdpartylicenses.json"), "[]");
     });
 
     it("loads a config from a different directory", async () => {
-        await executeCli("--root", __dirname, "--config", "nested/nestedConfig");
+        await executeCli("--root", __dirname, "--config", "nested/nested.config");
         expect(fsMocked.writeFileSync).toBeCalledWith(path.resolve(__dirname, "nestedConfig.json"), "[]");
     });
 
     it("throws if specified config does not exist", async () => {
-        await expect(() => executeCli("--root", __dirname, "--config", "unknownConfig")).rejects.toThrow();
-        expect(consoleError).toBeCalledWith("Error while loading the configuration file!");
+        await executeCli("--root", __dirname, "--config", "unknown.config");
+        expect(consoleWarn).toBeCalledWith("Could not find a configuration file!");
+        expect(fsMocked.writeFileSync).toBeCalledWith(path.resolve(__dirname, "3rdpartylicenses.json"), "[]");
     });
 });

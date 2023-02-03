@@ -2,6 +2,16 @@ import { OptionValues } from "commander";
 import path from "path";
 
 /**
+ * The possible search modes
+ */
+export enum SearchMode {
+    /** Also searches in subdirectories */
+    recursive = "recursive",
+    /** Only searches in the root directory */
+    flat = "flat",
+}
+
+/**
  * The package information for a single package
  */
 export interface IPackageInfo {
@@ -19,8 +29,8 @@ export interface IPackageInfo {
  * The parameters that can be configured within the configuration file
  */
 export interface IReporterConfiguration {
-    /** True if nested node_modules shall be included as well */
-    recursive: boolean;
+    /** The search mode. Can be "flat" or "search" */
+    search: SearchMode;
     /** The path to the root directory */
     root: string;
     /** The path to the output file */
@@ -42,7 +52,7 @@ export interface IReporterCliConfiguration extends IReporterConfiguration {
  */
 export const defaultConfiguration: IReporterCliConfiguration = {
     config: `./license-reporter.config`,
-    recursive: true,
+    search: SearchMode.recursive,
     root: process.cwd(),
     output: `./3rdpartylicenses.json`,
     overrides: [],
@@ -58,8 +68,7 @@ export async function loadConfiguration(options: OptionValues): Promise<IReporte
         let configPath = cliConfig.config;
         if (!path.isAbsolute(configPath)) configPath = path.resolve(cliConfig.root, configPath);
         const configImport = await import(configPath);
-        if (!configImport.configuration)
-            console.warn('The specified configuration does not export a "configuration"');
+        if (!configImport.configuration) console.warn('The specified configuration does not export a "configuration"');
         return Object.assign(cliConfig, configImport.configuration);
     } catch (e) {
         console.warn("Could not find a configuration file!");

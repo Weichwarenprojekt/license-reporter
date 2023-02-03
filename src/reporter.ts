@@ -1,5 +1,5 @@
 import { OptionValues } from "commander";
-import { IPackageInfo, IReporterConfiguration, loadConfiguration } from "./configuration";
+import { IPackageInfo, IReporterConfiguration, loadConfiguration, SearchMode } from "./configuration";
 import glob from "glob";
 import path from "path";
 import fs from "fs";
@@ -21,7 +21,7 @@ export async function reportLicenses(options: OptionValues): Promise<void> {
  * @param config The configuration
  */
 function findPackages(config: IReporterConfiguration): string[] {
-    let globPath = config.recursive ? path.resolve(config.root, "**/") : config.root;
+    let globPath = config.search === SearchMode.recursive ? path.resolve(config.root, "**/") : config.root;
     globPath = path.resolve(globPath, "node_modules", "**", "package.json");
 
     // Make sure to convert backslashes to forward slashes as glob only works with forward slashes

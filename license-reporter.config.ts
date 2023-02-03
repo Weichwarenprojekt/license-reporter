@@ -1,11 +1,11 @@
-import { IReporterConfiguration } from "./src/configuration";
+import { IReporterConfiguration, SearchMode } from "./src/configuration";
 
 export const configuration: Partial<IReporterConfiguration> = {
-    recursive: true,
+    search: SearchMode.recursive,
     overrides: [
         {
             name: "bser",
-            licenseText: "No license text found."
+            licenseText: "No license text found.",
         },
         {
             name: "exit",
@@ -13,7 +13,7 @@ export const configuration: Partial<IReporterConfiguration> = {
         },
         {
             name: "fb-watchman",
-            licenseText: "No license text found."
+            licenseText: "No license text found.",
         },
         {
             name: "imurmurhash",

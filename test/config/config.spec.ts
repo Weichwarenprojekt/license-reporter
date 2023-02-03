@@ -1,11 +1,8 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import fs from "fs";
 import path from "path";
+import fs from "fs";
 import { executeCli } from "../test.util";
 
-jest.mock("fs", () => {
-    return { ...jest.requireActual<typeof fs>("fs"), writeFileSync: jest.fn() };
-});
 const fsMocked = jest.mocked(fs);
 const consoleWarn = jest.spyOn(console, "warn").mockImplementation(() => {});
 

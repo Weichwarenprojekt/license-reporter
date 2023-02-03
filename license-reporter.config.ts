@@ -1,6 +1,6 @@
 import { IReporterConfiguration } from "./src/configuration";
 
-const config: Partial<IReporterConfiguration> = {
+export const configuration: Partial<IReporterConfiguration> = {
     recursive: true,
     overrides: [
         {
@@ -64,5 +64,3 @@ const config: Partial<IReporterConfiguration> = {
         },
     ],
 };
-
-export default config;

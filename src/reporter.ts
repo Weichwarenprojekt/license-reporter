@@ -143,5 +143,7 @@ function validateInformation(infos: IPackageInfo[]): void {
  */
 function exportInformation(config: IReporterConfiguration, infos: IPackageInfo[]): void {
     fs.mkdirSync(path.dirname(config.output), { recursive: true });
-    fs.writeFileSync(config.output, JSON.stringify(infos, null, 4));
+    let outputPath = config.output;
+    if (!path.isAbsolute(outputPath)) outputPath = path.resolve(config.root, outputPath);
+    fs.writeFileSync(outputPath, JSON.stringify(infos, null, 4));
 }

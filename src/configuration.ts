@@ -41,10 +41,10 @@ export interface IReporterCliConfiguration extends IReporterConfiguration {
  * The default configuration
  */
 export const defaultConfiguration: IReporterCliConfiguration = {
-    config: `${process.cwd()}/license-reporter.config`,
+    config: `./license-reporter.config`,
     recursive: true,
     root: process.cwd(),
-    output: `${process.cwd()}/3rdpartylicenses.json`,
+    output: `./3rdpartylicenses.json`,
     overrides: [],
 };
 
@@ -56,9 +56,11 @@ export async function loadConfiguration(options: OptionValues): Promise<IReporte
     const cliConfig = Object.assign(defaultConfiguration, options);
     try {
         let configPath = cliConfig.config;
-        if (!path.isAbsolute(cliConfig.config)) configPath = path.resolve(cliConfig.root, cliConfig.config);
+        if (!path.isAbsolute(configPath)) configPath = path.resolve(cliConfig.root, configPath);
         const configImport = await import(configPath);
-        return Object.assign(cliConfig, configImport.default);
+        if (!configImport.configuration)
+            console.warn('The specified configuration does not export a "configuration"');
+        return Object.assign(cliConfig, configImport.configuration);
     } catch (e) {
         console.error("Error while loading the configuration file!");
         throw e;

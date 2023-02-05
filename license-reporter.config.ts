@@ -1,7 +1,7 @@
 import { IReporterConfiguration, SearchMode } from "./src/configuration";
 
 export const configuration: Partial<IReporterConfiguration> = {
-    search: SearchMode.recursive,
+    search: SearchMode.flat,
     overrides: [
         {
             name: "bser",

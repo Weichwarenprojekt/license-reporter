@@ -74,7 +74,7 @@ function extractPackageInformation(packagePath: string): IPackageInfo {
     const packageInfo: IPackageInfo = {
         name: packageJson.name,
         url: packageJson.homepage,
-        licenseName: packageJson.license,
+        licenseName: packageJson.license ?? "",
         licenseText: "",
     };
     if (!packageInfo.name) packageInfo.name = path.basename(packageDirectory);

@@ -12,11 +12,10 @@ export const configuration: Partial<IReporterConfiguration> = {
             licenseText: "LICENSE for incomplete-package",
         },
         {
-            name: "",
-            licenseText: "Override without a name is ignored",
-        },
-        {
-            licenseText: "Override without a name is ignored",
+            name: "another-package",
+            url: "https://another-package.de",
+            licenseName: "ANOTHER",
+            licenseText: "LICENSE for another-package",
         },
     ],
 };

@@ -108,7 +108,7 @@ function prepareInformation(config: IReporterConfiguration, rawInfo: Map<string,
             rawInfo.set(packageName, Object.assign(raw, override));
         } else {
             rawInfo.set(packageName, {
-                name: override.name ?? "",
+                name: packageName,
                 url: override.url ?? "",
                 licenseName: override.licenseName ?? "",
                 licenseText: override.licenseText ?? "",

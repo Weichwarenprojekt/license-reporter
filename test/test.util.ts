@@ -2,6 +2,15 @@ import { IPackageInfo } from "../src/configuration";
 import { jest } from "@jest/globals";
 
 /**
+ * An empty mock for process stdout
+ */
+export const processStdoutMock = (
+    _str: string | Uint8Array,
+    _encoding?: BufferEncoding | undefined,
+    _cb?: ((err?: Error | undefined) => void) | undefined,
+): boolean => true;
+
+/**
  * Executes the cli
  * @param args The arguments for the cli
  */

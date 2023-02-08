@@ -13,8 +13,11 @@ export async function reportLicenses(options: OptionValues): Promise<void> {
     const packages = findPackages(config);
     const rawInfo = extractInformation(packages);
     const preparedInfo = prepareInformation(config, rawInfo);
-    validateInformation(preparedInfo);
+    const isInfoComplete = validateInformation(preparedInfo);
     exportInformation(config, preparedInfo);
+    if (!config.force && !isInfoComplete) {
+        process.exit(1);
+    }
 }
 
 /**
@@ -127,14 +130,22 @@ function prepareInformation(config: IReporterConfiguration, rawInfo: Map<string,
  * Validate the package information and notify the user if information is missing
  * @param infos The package information
  */
-function validateInformation(infos: IPackageInfo[]): void {
+function validateInformation(infos: IPackageInfo[]): boolean {
+    let isInfoComplete = true;
     const hint =
         'You can add "overrides" to the reporter configuration to manually complete the information of a package.';
+    const handleIncompleteInfo = (message: string): void => {
+        isInfoComplete = false;
+        console.warn(message);
+    };
     for (const info of infos) {
-        if (!info.url) console.warn(`No "url" was found for the package "${info.name}". ${hint}`);
-        if (!info.licenseName) console.warn(`No "licenseName" was found for the package "${info.name}". ${hint}`);
-        if (!info.licenseText) console.warn(`No "licenseText" was found for the package "${info.name}". ${hint}`);
+        if (!info.url) handleIncompleteInfo(`No "url" was found for the package "${info.name}". ${hint}`);
+        if (!info.licenseName)
+            handleIncompleteInfo(`No "licenseName" was found for the package "${info.name}". ${hint}`);
+        if (!info.licenseText)
+            handleIncompleteInfo(`No "licenseText" was found for the package "${info.name}". ${hint}`);
     }
+    return isInfoComplete;
 }
 
 /**

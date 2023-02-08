@@ -41,12 +41,13 @@ describe("Index E2E", () => {
                 "  -V, --version     output the version number\n" +
                 "  --config <value>  The path to the configuration file. (default:\n" +
                 '                    "./license-reporter.config")\n' +
-                '  --search <value>  The search mode. Can be "flat" or "search". (default:\n' +
-                '                    "recursive")\n' +
-                "  --root <value>    The path to the root directory. (default:\n" +
-                `                    ${JSON.stringify(process.cwd())})\n` +
+                "  --force           Forces a good exit. (default: false)\n" +
                 "  --output <value>  The path to the output file. (default:\n" +
                 '                    "./3rdpartylicenses.json")\n' +
+                "  --root <value>    The path to the root directory. (default:\n" +
+                `                    ${JSON.stringify(process.cwd())})\n` +
+                '  --search <value>  The search mode. Can be "flat" or "search". (default:\n' +
+                '                    "recursive")\n' +
                 "  -h, --help        display help for command\n",
         );
     });

@@ -29,14 +29,16 @@ export interface IPackageInfo {
  * The parameters that can be configured within the configuration file
  */
 export interface IReporterConfiguration {
-    /** The search mode. Can be "flat" or "search" */
-    search: SearchMode;
-    /** The path to the root directory */
-    root: string;
+    /** Forces a good exit. */
+    force: boolean;
     /** The path to the output file */
     output: string;
     /** The overrides for single packages */
     overrides: Partial<IPackageInfo>[];
+    /** The path to the root directory */
+    root: string;
+    /** The search mode. Can be "flat" or "search" */
+    search: SearchMode;
 }
 
 /**
@@ -52,10 +54,11 @@ export interface IReporterCliConfiguration extends IReporterConfiguration {
  */
 export const defaultConfiguration: IReporterCliConfiguration = {
     config: `./license-reporter.config`,
-    search: SearchMode.recursive,
-    root: process.cwd(),
+    force: false,
     output: `./3rdpartylicenses.json`,
     overrides: [],
+    root: process.cwd(),
+    search: SearchMode.recursive,
 };
 
 /**

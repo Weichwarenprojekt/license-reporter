@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs";
 import { executeCli, generateOutput, processStdoutMock } from "../test.util";
 import { IPackageInfo } from "../../src/configuration";
+import { replaceBackslashes } from "../../src/util";
 
 const fsMocked = jest.mocked(fs);
 const consoleWarn = jest.spyOn(console, "warn").mockImplementation(() => {});
@@ -51,7 +52,9 @@ describe("General CLI", () => {
         expect(consoleWarn).toBeCalledWith("Could not find a configuration file!");
         expect(consoleWarn).toBeCalledTimes(1);
         expect(consoleError).toBeCalledWith(
-            'Could not extract license information from "C:/dev/license-reporter/test/general/node_modules/invalid/package.json".',
+            `Could not extract license information from "${replaceBackslashes(
+                process.cwd(),
+            )}/test/general/node_modules/invalid/package.json".`,
         );
         expect(consoleError).toBeCalledTimes(2);
     });

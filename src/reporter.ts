@@ -3,6 +3,7 @@ import { IPackageInfo, IReporterConfiguration, loadConfiguration, SearchMode } f
 import glob from "glob";
 import path from "path";
 import fs from "fs";
+import { replaceBackslashes } from "./util";
 
 /**
  * Analyzes the node modules and generates a report
@@ -25,7 +26,7 @@ function findPackages(config: IReporterConfiguration): string[] {
     globPath = path.resolve(globPath, "node_modules", "**", "package.json");
 
     // Make sure to convert backslashes to forward slashes as glob only works with forward slashes
-    globPath = globPath.replace(/\\/g, "/");
+    globPath = replaceBackslashes(globPath);
     const packages = glob.sync(globPath);
 
     // Sort out nested package.jsons if parent directory already contains a package.json

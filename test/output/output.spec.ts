@@ -17,8 +17,8 @@ describe('Parameter "--output"', () => {
     });
 
     it("exports into absolute path", async () => {
-        await executeCli("--root", __dirname, "--output", "C:/test.json");
-        expect(fsMocked.writeFileSync).toBeCalledWith("C:/test.json", "[]");
+        await executeCli("--root", __dirname, "--output", "/test/test.json");
+        expect(fsMocked.writeFileSync).toBeCalledWith("/test/test.json", "[]");
     });
 
     it("exports into relative path relative from root", async () => {

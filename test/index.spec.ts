@@ -44,7 +44,7 @@ describe("Index E2E", () => {
                 '  --search <value>  The search mode. Can be "flat" or "search". (default:\n' +
                 '                    "recursive")\n' +
                 "  --root <value>    The path to the root directory. (default:\n" +
-                '                    "C:\\\\dev\\\\license-reporter")\n' +
+                `                    ${JSON.stringify(process.cwd())})\n` +
                 "  --output <value>  The path to the output file. (default:\n" +
                 '                    "./3rdpartylicenses.json")\n' +
                 "  -h, --help        display help for command\n",

@@ -42,6 +42,7 @@ describe("Index E2E", () => {
                 "  --config <value>  The path to the configuration file. (default:\n" +
                 '                    "./license-reporter.config")\n' +
                 "  --force           Forces a good exit. (default: false)\n" +
+                "  --ignore <value>  Ignores the given paths when searching for packages.\n" +
                 "  --output <value>  The path to the output file. (default:\n" +
                 '                    "./3rdpartylicenses.json")\n' +
                 "  --root <value>    The path to the root directory. (default:\n" +

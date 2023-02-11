@@ -30,7 +30,13 @@ function findPackages(config: IReporterConfiguration): string[] {
 
     // Make sure to convert backslashes to forward slashes as glob only works with forward slashes
     globPath = replaceBackslashes(globPath);
-    const packages = glob.sync(globPath);
+    if (config.ignore) {
+        if (!Array.isArray(config.ignore)) config.ignore = [config.ignore];
+        for (let i = 0; i < config.ignore.length; i++) {
+            config.ignore[i] = replaceBackslashes(config.ignore[i]);
+        }
+    }
+    const packages = glob.sync(globPath, { ignore: config.ignore });
 
     // Sort out nested package.jsons if parent directory already contains a package.json
     let currentDirectory = packages.length > 0 ? `${path.dirname(packages[0])}/` : "";

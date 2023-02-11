@@ -31,6 +31,8 @@ export interface IPackageInfo {
 export interface IReporterConfiguration {
     /** Forces a good exit. */
     force: boolean;
+    /** Ignores the given paths when searching for packages */
+    ignore: string | string[] | undefined;
     /** The path to the output file */
     output: string;
     /** The overrides for single packages */
@@ -55,6 +57,7 @@ export interface IReporterCliConfiguration extends IReporterConfiguration {
 export const defaultConfiguration: IReporterCliConfiguration = {
     config: `./license-reporter.config`,
     force: false,
+    ignore: undefined,
     output: `./3rdpartylicenses.json`,
     overrides: [],
     root: process.cwd(),

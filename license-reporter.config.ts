@@ -1,7 +1,7 @@
-import { IReporterConfiguration, SearchMode } from "./src/configuration";
+import { IReporterConfiguration } from "./src/configuration";
 
 export const configuration: Partial<IReporterConfiguration> = {
-    search: SearchMode.flat,
+    ignore: [`${__dirname}/test/**`],
     overrides: [
         {
             name: "bser",

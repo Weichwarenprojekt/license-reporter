@@ -1,2 +1,47 @@
-# wp-license-reporter
-A tool that analyzes node modules and extracts the license information into a json file that can be used for rendering the third party software.
+<div align="center">
+    <br>
+    <img src="assets/logo.png" width="550" alt=""/>
+</div>
+
+# Quickstart
+
+License Reporter analyzes your node_modules and provides you with a list of your dependencies containing the licenses of
+each package. The output is a JSON file. This file could be used for rendering a HTML list.
+
+**Installation**
+
+```
+npm i --save-dev @weichwarenprojekt/license-reporter
+```
+
+**Execution**
+
+```bash
+license-reporter
+```
+
+# Configuration
+
+Configure your project with a license-reporter.config.ts (or .js). By default the file
+
+```ts
+import { IReporterConfiguration, SearchMode } from "./src/configuration";
+
+export const configuration: Partial<IReporterConfiguration> = {
+    force: false,
+    ignore: undefined,
+    output: `./3rdpartylicenses.json`,
+    overrides: [],
+    root: process.cwd(),
+    search: SearchMode.recursive,
+};
+```
+
+| Config    | Description                                                                                                                    |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| force     | If true, license-reporter will ignore missing dependencies and exit with 0 anyways.                                            |
+| ignore    | Ignores the given paths when searching for packages.                                                                           |
+| output    | The path of the output file.                                                                                                   |
+| overrides | A list of packages that can be used to complete missing information or to add new packages to the output list.                 |
+| root      | The path to the root directory.                                                                                                |
+| search    | The search mode. Can be "flat" or "search". When set to "flat", license-reporter will only analyze the top-level node_modules. |

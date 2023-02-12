@@ -39,7 +39,7 @@ export interface IReporterConfiguration {
     overrides: Partial<IPackageInfo>[];
     /** The path to the root directory */
     root: string;
-    /** The search mode. Can be "flat" or "search" */
+    /** The search mode. Can be "flat" or "recursive" */
     search: SearchMode;
 }
 

@@ -1,5 +1,3 @@
-#! /usr/bin/env node
-
 import figlet from "figlet";
 import { Command } from "commander";
 import { reportLicenses } from "./reporter";
@@ -24,6 +22,6 @@ export async function cli(args: string[]): Promise<void> {
         .option("--ignore <value>", "Ignores the given paths when searching for packages.", defaultConfiguration.ignore)
         .option("--output <value>", "The path to the output file.", defaultConfiguration.output)
         .option("--root <value>", "The path to the root directory.", defaultConfiguration.root)
-        .option("--search <value>", 'The search mode. Can be "flat" or "search".', defaultConfiguration.search)
+        .option("--search <value>", 'The search mode. Can be "flat" or "recursive".', defaultConfiguration.search)
         .parseAsync(args);
 }

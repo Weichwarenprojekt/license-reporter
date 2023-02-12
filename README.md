@@ -49,7 +49,7 @@ export const configuration: Partial<IReporterConfiguration> = {
 For CommonJS modules you would use **module.exports.configuration** instead of **export const configuration**
 
 | Config    | Description                                                                                                                    |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------ |
+|-----------|--------------------------------------------------------------------------------------------------------------------------------|
 | force     | If true, license-reporter will ignore missing dependencies and exit with 0 anyways.                                            |
 | ignore    | Ignores the given paths when searching for packages.                                                                           |
 | output    | The path of the output file.                                                                                                   |

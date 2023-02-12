@@ -22,7 +22,8 @@ license-reporter
 
 # Configuration
 
-Configure your project with a license-reporter.config.ts (or .js). By default the file
+By default, the tool will search for a license-reporter.config.ts (or .js) adjacent to the node_modules folder. If no
+configuration is found, default settings will be used.
 
 ```ts
 import { IReporterConfiguration, SearchMode } from "./src/configuration";

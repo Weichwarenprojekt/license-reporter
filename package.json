@@ -3,7 +3,6 @@
     "version": "0.1.0",
     "description": "A tool that analyzes node modules and extracts the license information into a json file that can be used for rendering the third party software.",
     "main": "src/index.js",
-    "types": "src/index.d.ts",
     "scripts": {
         "cli": "node ./src/index.js",
         "help": "node ./src/index.js --help",

@@ -6,7 +6,7 @@
 # Quickstart
 
 License Reporter analyzes your node_modules and provides you with a list of your dependencies containing the licenses of
-each package. The output is a JSON file. This file could be used for rendering a HTML list.
+each package. The output is a JSON file. This file could then be used for rendering an HTML list.
 
 **Installation**
 
@@ -23,7 +23,8 @@ license-reporter
 # Configuration
 
 By default, the tool will search for a license-reporter.config.ts (or .js) adjacent to the node_modules folder. If no
-configuration is found, default settings will be used.
+configuration is found, default settings will be used. It is important, that the configuration file exports a field
+named "configuration". With Typescript the configuration could look like this:
 
 ```ts
 import { IReporterConfiguration, SearchMode } from "./src/configuration";
@@ -32,11 +33,20 @@ export const configuration: Partial<IReporterConfiguration> = {
     force: false,
     ignore: undefined,
     output: `./3rdpartylicenses.json`,
-    overrides: [],
+    overrides: [
+        {
+            name: "new-package",
+            url: "https://new-package.de",
+            licenseName: "MIT",
+            licenseText: "LICENSE text for new-package",
+        },
+    ],
     root: process.cwd(),
     search: SearchMode.recursive,
 };
 ```
+
+For CommonJS modules you would use **module.exports.configuration** instead of **export const configuration**
 
 | Config    | Description                                                                                                                    |
 | --------- | ------------------------------------------------------------------------------------------------------------------------------ |

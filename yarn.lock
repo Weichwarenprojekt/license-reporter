@@ -969,6 +969,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@weichwarenprojekt/license-reporter@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@weichwarenprojekt/license-reporter@workspace:."
+  dependencies:
+    "@jest/globals": ^29.4.1
+    "@types/figlet": ^1.5.5
+    "@types/glob": ^8.0.1
+    "@types/node": ^18.11.18
+    "@weichwarenprojekt/wersion": ^0.1.1
+    commander: ^9.4.1
+    figlet: ^1.5.2
+    glob: ^8.1.0
+    jest: ^29.4.1
+    prettier: ^2.8.1
+    ts-jest: ^29.0.5
+    ts-node: ^10.9.1
+    typescript: ^4.9.4
+  bin:
+    licenssdfe-reporter: ./src/index.js
+  languageName: unknown
+  linkType: soft
+
 "@weichwarenprojekt/wersion@npm:^0.1.1":
   version: 0.1.1
   resolution: "@weichwarenprojekt/wersion@npm:0.1.1"
@@ -3742,28 +3764,6 @@ __metadata:
   checksum: d5fc37cd561f9daee3c80e03b92ed3e84d80dde3365a8767263d03dacfc8fa06b065ffe1df00d8c2a09f731482fcacae745abfbb478d4af36d0a891fad4834d3
   languageName: node
   linkType: hard
-
-"wp-license-reporter@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "wp-license-reporter@workspace:."
-  dependencies:
-    "@jest/globals": ^29.4.1
-    "@types/figlet": ^1.5.5
-    "@types/glob": ^8.0.1
-    "@types/node": ^18.11.18
-    "@weichwarenprojekt/wersion": ^0.1.1
-    commander: ^9.4.1
-    figlet: ^1.5.2
-    glob: ^8.1.0
-    jest: ^29.4.1
-    prettier: ^2.8.1
-    ts-jest: ^29.0.5
-    ts-node: ^10.9.1
-    typescript: ^4.9.4
-  bin:
-    wp-license-reporter: ./src/index.js
-  languageName: unknown
-  linkType: soft
 
 "wrap-ansi@npm:^7.0.0":
   version: 7.0.0

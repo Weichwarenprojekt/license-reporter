@@ -1,6 +1,6 @@
 {
   "name": "wp-license-reporter",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A tool that analyzes node modules and extracts the license information into a json file that can be used for rendering the third party software.",
   "main": "src/index.js",
   "types": "src/index.d.ts",

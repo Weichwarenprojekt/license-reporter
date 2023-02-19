@@ -27,12 +27,12 @@ describe('Parameter "--output"', () => {
     });
 
     it("exports into path provided by the config", async () => {
-        await executeCli("--root", __dirname, "--config", "test.config");
+        await executeCli("--root", __dirname, "--config", "test.config.ts");
         expect(fsMocked.writeFileSync).toBeCalledWith(path.resolve(__dirname, "fromConfig/test.json"), "[]");
     });
 
     it("exports into path provided by the config even if cli parameter is set", async () => {
-        await executeCli("--root", __dirname, "--config", "test.config", "--output", "C:/test.json");
+        await executeCli("--root", __dirname, "--config", "test.config.ts", "--output", "C:/test.json");
         expect(fsMocked.writeFileSync).toBeCalledWith(path.resolve(__dirname, "fromConfig/test.json"), "[]");
     });
 

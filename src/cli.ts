@@ -1,9 +1,14 @@
-import figlet from "figlet";
 import { Command } from "commander";
 import { reportLicenses } from "./reporter";
 import { defaultConfiguration } from "./configuration";
 
-const name = figlet.textSync("WP License Reporter");
+const name =
+    " __        ______    _     _                           ____                       _\n" +
+    " \\ \\      / /  _ \\  | |   (_) ___ ___ _ __  ___  ___  |  _ \\ ___ _ __   ___  _ __| |_ ___ _ __\n" +
+    "  \\ \\ /\\ / /| |_) | | |   | |/ __/ _ \\ '_ \\/ __|/ _ \\ | |_) / _ \\ '_ \\ / _ \\| '__| __/ _ \\ '__|\n" +
+    "   \\ V  V / |  __/  | |___| | (_|  __/ | | \\__ \\  __/ |  _ <  __/ |_) | (_) | |  | ||  __/ |\n" +
+    "    \\_/\\_/  |_|     |_____|_|\\___\\___|_| |_|___/\\___| |_| \\_\\___| .__/ \\___/|_|   \\__\\___|_|\n" +
+    "                                                                |_|";
 const program = new Command();
 
 /**

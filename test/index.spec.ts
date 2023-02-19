@@ -8,7 +8,7 @@ function executeBin(...args: string[]): Promise<{ code: number | null; stdout: s
     return new Promise((resolve) => {
         let stdout = "";
         let stderr = "";
-        const child = spawn("yarn cli", args, { shell: true });
+        const child = spawn("yarn bundledCli", args, { shell: true });
         child.stdout.on("data", (data) => (stdout += data));
         child.stderr.on("data", (data) => (stderr += data));
         child.on("close", function (code) {
@@ -27,20 +27,20 @@ describe("Index E2E", () => {
         expect(result.code).toEqual(0);
         expect(result.stderr).toEqual("");
         expect(result.stdout).toEqual(
-            "Usage: index [options]\n" +
+            "Usage: license-reporter [options]\n" +
                 "\n" +
-                " __        ______    _     _                           ____                       _            \n" +
-                " \\ \\      / /  _ \\  | |   (_) ___ ___ _ __  ___  ___  |  _ \\ ___ _ __   ___  _ __| |_ ___ _ __ \n" +
+                " __        ______    _     _                           ____                       _\n" +
+                " \\ \\      / /  _ \\  | |   (_) ___ ___ _ __  ___  ___  |  _ \\ ___ _ __   ___  _ __| |_ ___ _ __\n" +
                 "  \\ \\ /\\ / /| |_) | | |   | |/ __/ _ \\ '_ \\/ __|/ _ \\ | |_) / _ \\ '_ \\ / _ \\| '__| __/ _ \\ '__|\n" +
-                "   \\ V  V / |  __/  | |___| | (_|  __/ | | \\__ \\  __/ |  _ <  __/ |_) | (_) | |  | ||  __/ |   \n" +
-                "    \\_/\\_/  |_|     |_____|_|\\___\\___|_| |_|___/\\___| |_| \\_\\___| .__/ \\___/|_|   \\__\\___|_|   \n" +
-                "                                                                |_|                            \n" +
+                "   \\ V  V / |  __/  | |___| | (_|  __/ | | \\__ \\  __/ |  _ <  __/ |_) | (_) | |  | ||  __/ |\n" +
+                "    \\_/\\_/  |_|     |_____|_|\\___\\___|_| |_|___/\\___| |_| \\_\\___| .__/ \\___/|_|   \\__\\___|_|\n" +
+                "                                                                |_|\n" +
                 "A tool that analyzes node modules and extracts the license information into a json file that can be used for rendering the third party software.\n" +
                 "\n" +
                 "Options:\n" +
                 "  -V, --version     output the version number\n" +
                 "  --config <value>  The path to the configuration file. (default:\n" +
-                '                    "./license-reporter.config")\n' +
+                '                    "./license-reporter.config.ts")\n' +
                 "  --force           Forces a good exit. (default: false)\n" +
                 "  --ignore <value>  Ignores the given paths when searching for packages.\n" +
                 "  --output <value>  The path to the output file. (default:\n" +

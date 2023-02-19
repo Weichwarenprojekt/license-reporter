@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { executeCli, generateOutput } from "../test.util";
 import fs from "fs";
-import { IPackageInfo } from "../../src/configuration";
+import { IPackageInfo } from "../../src";
 import path from "path";
 
 // Mock fs and console.warn
@@ -77,7 +77,7 @@ describe('Parameter "--override"', () => {
     });
 
     it("merges overrides into the parsed package info", async () => {
-        await executeCli("--root", __dirname, "--config", "test1.config");
+        await executeCli("--root", __dirname, "--config", "test1.config.ts");
         expect(consoleWarn).not.toBeCalled();
         expect(fsMocked.writeFileSync).toBeCalledWith(
             path.resolve(__dirname, "3rdpartylicenses.json"),
@@ -86,7 +86,7 @@ describe('Parameter "--override"', () => {
     });
 
     it("also overrides found information", async () => {
-        await executeCli("--root", __dirname, "--config", "test2.config");
+        await executeCli("--root", __dirname, "--config", "test2.config.ts");
         expect(consoleWarn).not.toBeCalled();
         expect(fsMocked.writeFileSync).toBeCalledWith(
             path.resolve(__dirname, "3rdpartylicenses.json"),
@@ -95,7 +95,7 @@ describe('Parameter "--override"', () => {
     });
 
     it("adds new package information if override is unknown", async () => {
-        await executeCli("--root", __dirname, "--config", "test3.config");
+        await executeCli("--root", __dirname, "--config", "test3.config.ts");
         expect(consoleWarn).not.toBeCalled();
         expect(fsMocked.writeFileSync).toBeCalledWith(
             path.resolve(__dirname, "3rdpartylicenses.json"),
@@ -104,7 +104,7 @@ describe('Parameter "--override"', () => {
     });
 
     it("also informs user if new override is incomplete", async () => {
-        await executeCli("--root", __dirname, "--config", "test4.config", "--force");
+        await executeCli("--root", __dirname, "--config", "test4.config.ts", "--force");
         expect(fsMocked.writeFileSync).toBeCalledWith(
             path.resolve(__dirname, "3rdpartylicenses.json"),
             generateOutput(packageAnotherIncomplete, packageIncomplete, packageNew),

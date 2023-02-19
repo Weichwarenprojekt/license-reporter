@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import path from "path";
 import fs from "fs";
 import { executeCli, generateOutput } from "../test.util";
-import { IPackageInfo } from "../../src/configuration";
+import { IPackageInfo } from "../../src";
 
 const fsMocked = jest.mocked(fs);
 jest.spyOn(console, "warn").mockImplementation(() => {});
@@ -43,7 +43,7 @@ describe('Parameter "--ignore"', () => {
     });
 
     it("ignores node_modules folder", async () => {
-        await executeCli("--root", __dirname, "--config", "test1.config");
+        await executeCli("--root", __dirname, "--config", "test1.config.ts");
         expect(fsMocked.writeFileSync).toBeCalledWith(
             path.resolve(__dirname, "3rdpartylicenses.json"),
             generateOutput(packageTwo),
@@ -51,7 +51,7 @@ describe('Parameter "--ignore"', () => {
     });
 
     it("ignores both folders", async () => {
-        await executeCli("--root", __dirname, "--config", "test2.config");
+        await executeCli("--root", __dirname, "--config", "test2.config.ts");
         expect(fsMocked.writeFileSync).toBeCalledWith(
             path.resolve(__dirname, "3rdpartylicenses.json"),
             generateOutput(),

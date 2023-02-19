@@ -1,5 +1,6 @@
 import { OptionValues } from "commander";
 import path from "path";
+import { loadModule } from "@weichwarenprojekt/ts-importer";
 
 /**
  * The possible search modes
@@ -55,7 +56,7 @@ export interface IReporterCliConfiguration extends IReporterConfiguration {
  * The default configuration
  */
 export const defaultConfiguration: IReporterCliConfiguration = {
-    config: `./license-reporter.config`,
+    config: `./license-reporter.config.ts`,
     force: false,
     ignore: undefined,
     output: `./3rdpartylicenses.json`,
@@ -73,7 +74,7 @@ export async function loadConfiguration(options: OptionValues): Promise<IReporte
     try {
         let configPath = cliConfig.config;
         if (!path.isAbsolute(configPath)) configPath = path.resolve(cliConfig.root, configPath);
-        const configImport = await import(configPath);
+        const configImport = loadModule<{ configuration: IReporterConfiguration }>(configPath);
         if (!configImport.configuration) console.warn('The specified configuration does not export a "configuration"');
         return Object.assign(cliConfig, configImport.configuration);
     } catch (e) {

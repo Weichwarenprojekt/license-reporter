@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { executeCli, generateOutput } from "../test.util";
 import fs from "fs";
-import { IPackageInfo } from "../../src/configuration";
+import { IPackageInfo } from "../../src";
 import path from "path";
 
 // Mock fs and console.warn
@@ -28,7 +28,7 @@ describe('Parameter "--root"', () => {
     });
 
     it("collects all packages if set to the root directory", async () => {
-        await executeCli("--root", __dirname, "--config", "test.config");
+        await executeCli("--root", __dirname, "--config", "test.config.ts");
         expect(fsMocked.writeFileSync).toBeCalledWith(
             path.resolve(__dirname, "test.json"),
             generateOutput(packageOne, packageTwo),
@@ -36,7 +36,7 @@ describe('Parameter "--root"', () => {
     });
 
     it("only collects nested packages if set to nested directory", async () => {
-        await executeCli("--root", __dirname + "/nested", "--config", "nested-test.config");
+        await executeCli("--root", __dirname + "/nested", "--config", "nested-test.config.ts");
         expect(fsMocked.writeFileSync).toBeCalledWith(
             path.resolve(__dirname, "nested", "nested-test.json"),
             generateOutput(packageTwo),

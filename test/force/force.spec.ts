@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import path from "path";
 import fs from "fs";
 import { executeCli, generateOutput } from "../test.util";
-import { IPackageInfo } from "../../src/configuration";
+import { IPackageInfo } from "../../src";
 
 const fsMocked = jest.mocked(fs);
 jest.spyOn(console, "warn").mockImplementation(() => {});
@@ -51,7 +51,7 @@ describe('Parameter "--force"', () => {
     });
 
     it("exits program normally if info complete", async () => {
-        await executeCli("--root", __dirname, "--config", "test.config");
+        await executeCli("--root", __dirname, "--config", "test.config.ts");
         expect(fsMocked.writeFileSync).toBeCalledWith(
             path.resolve(__dirname, "3rdpartylicenses.json"),
             generateOutput(completePackage),
@@ -59,7 +59,7 @@ describe('Parameter "--force"', () => {
     });
 
     it("exits program normally if info complete and force is set", async () => {
-        await executeCli("--root", __dirname, "--config", "test.config", "--force");
+        await executeCli("--root", __dirname, "--config", "test.config.ts", "--force");
         expect(fsMocked.writeFileSync).toBeCalledWith(
             path.resolve(__dirname, "3rdpartylicenses.json"),
             generateOutput(completePackage),

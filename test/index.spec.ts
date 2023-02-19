@@ -38,18 +38,22 @@ describe("Index E2E", () => {
                 "A tool that analyzes node modules and extracts the license information into a json file that can be used for rendering the third party software.\n" +
                 "\n" +
                 "Options:\n" +
-                "  -V, --version     output the version number\n" +
-                "  --config <value>  The path to the configuration file. (default:\n" +
-                '                    "./license-reporter.config.ts")\n' +
-                "  --force           Forces a good exit. (default: false)\n" +
-                "  --ignore <value>  Ignores the given paths when searching for packages.\n" +
-                "  --output <value>  The path to the output file. (default:\n" +
-                '                    "./3rdpartylicenses.json")\n' +
-                "  --root <value>    The path to the root directory. (default:\n" +
-                `                    ${JSON.stringify(process.cwd())})\n` +
-                '  --search <value>  The search mode. Can be "flat" or "recursive". (default:\n' +
-                '                    "recursive")\n' +
-                "  -h, --help        display help for command\n",
+                "  -V, --version                 output the version number\n" +
+                "  --config <value>              The path to the configuration file. (default:\n" +
+                '                                "./license-reporter.config.ts")\n' +
+                "  --defaultLicenseText <value>  The default license text that is used if the\n" +
+                "                                tool can't find a license text for a package.\n" +
+                "                                (default: \"No license text found.\")\n" +
+                "  --force                       Forces a good exit. (default: false)\n" +
+                "  --ignore <value>              Ignores the given paths when searching for\n" +
+                "                                packages.\n" +
+                "  --output <value>              The path to the output file. (default:\n" +
+                '                                "./3rdpartylicenses.json")\n' +
+                "  --root <value>                The path to the root directory. (default:\n" +
+                `                                ${JSON.stringify(process.cwd())})\n` +
+                '  --search <value>              The search mode. Can be "flat" or "recursive".\n' +
+                '                                (default: "recursive")\n' +
+                "  -h, --help                    display help for command\n",
         );
     });
 });

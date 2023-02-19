@@ -6,8 +6,8 @@
         "build": "webpack",
         "cli": "node src/index.ts",
         "bundledCli": "node dist/license-reporter.js",
-        "test": "jest",
-        "coverage": "jest --coverage"
+        "test": "yarn build && jest",
+        "coverage": "yarn build && jest --coverage"
     },
     "bin": "./dist/license-reporter.js",
     "main": "./dist/license-reporter.js",

@@ -11,7 +11,7 @@ import { replaceBackslashes } from "./util";
 export async function reportLicenses(options: OptionValues): Promise<void> {
     const config = await loadConfiguration(options);
     const packages = findPackages(config);
-    const rawInfo = extractInformation(packages);
+    const rawInfo = extractInformation(config, packages);
     const preparedInfo = prepareInformation(config, rawInfo);
     const isInfoComplete = validateInformation(preparedInfo);
     exportInformation(config, preparedInfo);
@@ -56,13 +56,14 @@ function findPackages(config: IReporterConfiguration): string[] {
 
 /**
  * Extract the information of the packages
+ * @param config The configuration
  * @param packages The paths to each third party package
  */
-function extractInformation(packages: string[]): Map<string, IPackageInfo> {
+function extractInformation(config: IReporterConfiguration, packages: string[]): Map<string, IPackageInfo> {
     const infos = new Map<string, IPackageInfo>();
     for (const packagePath of packages) {
         try {
-            const packageInfo = extractPackageInformation(packagePath);
+            const packageInfo = extractPackageInformation(config, packagePath);
             infos.set(packageInfo.name, packageInfo);
         } catch (e) {
             console.error(`Could not extract license information from "${packagePath}".`);
@@ -74,9 +75,10 @@ function extractInformation(packages: string[]): Map<string, IPackageInfo> {
 
 /**
  * Extract the information of a single package
+ * @param config The configuration
  * @param packagePath The path to the package
  */
-function extractPackageInformation(packagePath: string): IPackageInfo {
+function extractPackageInformation(config: IReporterConfiguration, packagePath: string): IPackageInfo {
     // Parse the package json
     const packageJson = JSON.parse(fs.readFileSync(packagePath, "utf-8"));
     // Make sure to convert backslashes to forward slashes as glob only works with forward slashes
@@ -100,6 +102,7 @@ function extractPackageInformation(packagePath: string): IPackageInfo {
     if (licenseFiles.length === 0) licenseFiles = glob.sync("copyin*", options);
     const licensePath = licenseFiles[0];
     if (licensePath) packageInfo.licenseText = fs.readFileSync(path.resolve(packageDirectory, licensePath), "utf-8");
+    if (!packageInfo.licenseText) packageInfo.licenseText = config.defaultLicenseText;
     return packageInfo;
 }
 

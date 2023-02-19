@@ -20,16 +20,23 @@ npm i --save-dev @weichwarenprojekt/license-reporter
 license-reporter
 ```
 
+Or if the configuration is in a different directory you can specify the path like that:
+
+```bash
+license-reporter --config /different/path/to/the/config.ts
+```
+
 # Configuration
 
-By default, the tool will search for a license-reporter.config.ts (or .js) adjacent to the node_modules folder. If no
+By default, the tool will search for a license-reporter.config.ts adjacent to the node_modules folder. If no
 configuration is found, default settings will be used. It is important, that the configuration file exports a field
 named "configuration". With Typescript the configuration could look like this:
 
-```ts
-import { IReporterConfiguration, SearchMode } from "./src/configuration";
+```typescript
+import { IReporterConfiguration, SearchMode } from "@weichwarenprojekt/license-reporter";
 
 export const configuration: Partial<IReporterConfiguration> = {
+    defaultLicenseText: "No license text found.",
     force: false,
     ignore: undefined,
     output: `./3rdpartylicenses.json`,
@@ -48,14 +55,15 @@ export const configuration: Partial<IReporterConfiguration> = {
 
 For CommonJS modules you would use **module.exports.configuration** instead of **export const configuration**
 
-| Config    | Description                                                                                                                    |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| force     | If true, license-reporter will ignore missing dependencies and exit with 0 anyways.                                            |
-| ignore    | Ignores the given paths when searching for packages.                                                                           |
-| output    | The path of the output file.                                                                                                   |
-| overrides | A list of packages that can be used to complete missing information or to add new packages to the output list.                 |
-| root      | The path to the root directory.                                                                                                |
-| search    | The search mode. Can be "flat" or "search". When set to "flat", license-reporter will only analyze the top-level node_modules. |
+| Config             | Description                                                                                                                    |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| defaultLicenseText | The default license text that is used if the tool can't find a license text for a package.                                     |
+| force              | If true, license-reporter will ignore missing dependencies and exit with 0 anyways.                                            |
+| ignore             | Ignores the given paths when searching for packages.                                                                           |
+| output             | The path of the output file.                                                                                                   |
+| overrides          | A list of packages that can be used to complete missing information or to add new packages to the output list.                 |
+| root               | The path to the root directory.                                                                                                |
+| search             | The search mode. Can be "flat" or "search". When set to "flat", license-reporter will only analyze the top-level node_modules. |
 
 # Output
 

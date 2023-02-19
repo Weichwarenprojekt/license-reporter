@@ -30,6 +30,8 @@ export interface IPackageInfo {
  * The parameters that can be configured within the configuration file
  */
 export interface IReporterConfiguration {
+    /** The default license text that is used if the tool can't find a license text for a package */
+    defaultLicenseText: string;
     /** Forces a good exit. */
     force: boolean;
     /** Ignores the given paths when searching for packages */
@@ -57,6 +59,7 @@ export interface IReporterCliConfiguration extends IReporterConfiguration {
  */
 export const defaultConfiguration: IReporterCliConfiguration = {
     config: `./license-reporter.config.ts`,
+    defaultLicenseText: "No license text found.",
     force: false,
     ignore: undefined,
     output: `./3rdpartylicenses.json`,

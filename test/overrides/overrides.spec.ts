@@ -58,7 +58,7 @@ describe('Parameter "--override"', () => {
     });
 
     it("notifies user if package info should be provided manually", async () => {
-        await executeCli("--root", __dirname, "--force");
+        await executeCli("--root", __dirname, "--force", "--defaultLicenseText", "");
         expect(consoleWarn).toBeCalledTimes(4);
         expect(consoleWarn).toBeCalledWith("Could not find a configuration file!");
         expect(consoleWarn).toBeCalledWith(
@@ -104,7 +104,7 @@ describe('Parameter "--override"', () => {
     });
 
     it("also informs user if new override is incomplete", async () => {
-        await executeCli("--root", __dirname, "--config", "test4.config.ts", "--force");
+        await executeCli("--root", __dirname, "--config", "test4.config.ts", "--force", "--defaultLicenseText", "");
         expect(fsMocked.writeFileSync).toBeCalledWith(
             path.resolve(__dirname, "3rdpartylicenses.json"),
             generateOutput(packageAnotherIncomplete, packageIncomplete, packageNew),

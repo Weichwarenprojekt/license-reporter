@@ -15,7 +15,7 @@ const incompletePackage: IPackageInfo = {
     name: "incomplete-package",
     url: "https://incomplete-package.de",
     licenseName: "",
-    licenseText: "",
+    licenseText: "No license text found.",
 };
 const completePackage: IPackageInfo = {
     name: "incomplete-package",

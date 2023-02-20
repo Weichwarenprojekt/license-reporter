@@ -1,4 +1,5 @@
 **/*
+!3rdpartylicenses.json
 !src/**/*
 !dist/**/*
 !package.json

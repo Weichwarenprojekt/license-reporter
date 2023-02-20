@@ -16,11 +16,10 @@ const program = new Command();
  * @param args The arguments for the cli
  */
 export async function cli(args: string[]): Promise<void> {
+    const packageJson = require("../package.json");
     await program
-        .version(process.env.npm_package_version ?? "0.0.0")
-        .description(
-            `${name}\nA tool that analyzes node modules and extracts the license information into a json file that can be used for rendering the third party software.`,
-        )
+        .version(packageJson.version)
+        .description(`${name}\n${packageJson.description}`)
         .action(reportLicenses)
         .option("--config <value>", "The path to the configuration file.", defaultConfiguration.config)
         .option(

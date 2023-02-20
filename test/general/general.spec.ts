@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import path from "path";
 import fs from "fs";
 import { executeCli, generateOutput, processStdoutMock } from "../test.util";
-import { IPackageInfo } from "../../src/configuration";
+import { IPackageInfo } from "../../src";
 import { replaceBackslashes } from "../../src/util";
 
 const fsMocked = jest.mocked(fs);
@@ -59,9 +59,8 @@ describe("General CLI", () => {
         expect(consoleError).toBeCalledTimes(2);
     });
 
-    it("prints a default version if npm_package_version isn't set", async () => {
-        const oldNpmPackageVersion = process.env.npm_package_version;
-        delete process.env.npm_package_version;
+    it("prints the version from the package json", async () => {
+        const packageJson = require("../../package.json");
         const processStdoutWrite = jest.spyOn(process.stdout, "write").mockImplementation(processStdoutMock);
         try {
             await executeCli("--version");
@@ -69,25 +68,8 @@ describe("General CLI", () => {
             expect(e).toBeInstanceOf(Error);
         }
         expect(processExit).toBeCalledWith(0);
-        expect(processStdoutWrite).toBeCalledWith("0.0.0\n");
+        expect(processStdoutWrite).toBeCalledWith(`${packageJson.version}\n`);
         expect(processStdoutWrite).toBeCalledTimes(1);
         processStdoutWrite.mockRestore();
-        process.env.npm_package_version = oldNpmPackageVersion;
-    });
-
-    it("prints npm_package_version if available", async () => {
-        const oldNpmPackageVersion = process.env.npm_package_version;
-        process.env.npm_package_version = "100.0.0";
-        const processStdoutWrite = jest.spyOn(process.stdout, "write").mockImplementation(processStdoutMock);
-        try {
-            await executeCli("--version");
-        } catch (e) {
-            expect(e).toBeInstanceOf(Error);
-        }
-        expect(processExit).toBeCalledWith(0);
-        expect(processStdoutWrite).toBeCalledWith("100.0.0\n");
-        expect(processStdoutWrite).toBeCalledTimes(1);
-        processStdoutWrite.mockRestore();
-        process.env.npm_package_version = oldNpmPackageVersion;
     });
 });

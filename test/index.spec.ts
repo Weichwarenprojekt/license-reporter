@@ -43,10 +43,13 @@ describe("Index E2E", () => {
                 '                                "./license-reporter.config.ts")\n' +
                 "  --defaultLicenseText <value>  The default license text that is used if the\n" +
                 "                                tool can't find a license text for a package.\n" +
-                "                                (default: \"No license text found.\")\n" +
+                '                                (default: "No license text found.")\n' +
                 "  --force                       Forces a good exit. (default: false)\n" +
                 "  --ignore <value>              Ignores the given paths when searching for\n" +
                 "                                packages.\n" +
+                "  --ignoreMissingUrl            If true, license-reporter will not fail and\n" +
+                "                                warn you because of missing urls. (default:\n" +
+                "                                false)\n" +
                 "  --output <value>              The path to the output file. (default:\n" +
                 '                                "./3rdpartylicenses.json")\n' +
                 "  --root <value>                The path to the root directory. (default:\n" +

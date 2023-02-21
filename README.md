@@ -36,9 +36,10 @@ named "configuration". With Typescript the configuration could look like this:
 import { IReporterConfiguration, SearchMode } from "@weichwarenprojekt/license-reporter";
 
 export const configuration: Partial<IReporterConfiguration> = {
-    defaultLicenseText: "", // default: "No license text found." 
+    defaultLicenseText: "", // default: "No license text found."
     force: true, // default: false
     ignore: [`${__dirname}/test/**`], // default: undefined
+    ignoreMissingUrl: true, // default: false
     output: "output.json", // default: "./3rdpartylicenses.json"
     overrides: [
         {
@@ -49,7 +50,7 @@ export const configuration: Partial<IReporterConfiguration> = {
         },
     ], // default: []
     root: "/path/to/root", // default: process.cwd()
-    search: SearchMode.flat, // default: SearchMode.recursive 
+    search: SearchMode.flat, // default: SearchMode.recursive
 };
 ```
 
@@ -60,14 +61,18 @@ For CommonJS modules you would use **module.exports.configuration** instead of *
 | defaultLicenseText | The default license text that is used if the tool can't find a license text for a package.                                     |
 | force              | If true, license-reporter will ignore missing dependencies and exit with 0 anyways.                                            |
 | ignore             | Ignores the given paths when searching for packages.                                                                           |
+| ignoreMissingUrl   | If true, license-reporter will not fail and warn you because of missing urls.                                                  |
 | output             | The path of the output file.                                                                                                   |
 | overrides          | A list of packages that can be used to complete missing information or to add new packages to the output list.                 |
 | root               | The path to the root directory.                                                                                                |
 | search             | The search mode. Can be "flat" or "search". When set to "flat", license-reporter will only analyze the top-level node_modules. |
 
+Every option is also available using the cli directly, but license-reporter will always take options set in the
+configuration over options given as CLI arguments.
+
 # Output
 
-By default the tool generates a 3rdpartylicenses.json in the root directory. The output will look something like the
+By default, the tool generates a 3rdpartylicenses.json in the root directory. The output will look something like the
 following:
 
 ```json

@@ -13,7 +13,7 @@ export async function reportLicenses(options: OptionValues): Promise<void> {
     const packages = findPackages(config);
     const rawInfo = extractInformation(config, packages);
     const preparedInfo = prepareInformation(config, rawInfo);
-    const isInfoComplete = validateInformation(preparedInfo);
+    const isInfoComplete = validateInformation(config, preparedInfo);
     exportInformation(config, preparedInfo);
     if (!config.force && !isInfoComplete) {
         process.exit(1);
@@ -137,9 +137,10 @@ function prepareInformation(config: IReporterConfiguration, rawInfo: Map<string,
 
 /**
  * Validate the package information and notify the user if information is missing
+ * @param config The configuration
  * @param infos The package information
  */
-function validateInformation(infos: IPackageInfo[]): boolean {
+function validateInformation(config: IReporterConfiguration, infos: IPackageInfo[]): boolean {
     let isInfoComplete = true;
     const hint =
         'You can add "overrides" to the reporter configuration to manually complete the information of a package.';
@@ -148,7 +149,8 @@ function validateInformation(infos: IPackageInfo[]): boolean {
         console.warn(message);
     };
     for (const info of infos) {
-        if (!info.url) handleIncompleteInfo(`No "url" was found for the package "${info.name}". ${hint}`);
+        if (!info.url && !config.ignoreMissingUrl)
+            handleIncompleteInfo(`No "url" was found for the package "${info.name}". ${hint}`);
         if (!info.licenseName)
             handleIncompleteInfo(`No "licenseName" was found for the package "${info.name}". ${hint}`);
         if (!info.licenseText)

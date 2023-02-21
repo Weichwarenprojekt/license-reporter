@@ -36,6 +36,8 @@ export interface IReporterConfiguration {
     force: boolean;
     /** Ignores the given paths when searching for packages */
     ignore: string | string[] | undefined;
+    /** If true, license-reporter will not fail and warn you because of missing urls */
+    ignoreMissingUrl: boolean;
     /** The path to the output file */
     output: string;
     /** The overrides for single packages */
@@ -62,6 +64,7 @@ export const defaultConfiguration: IReporterCliConfiguration = {
     defaultLicenseText: "No license text found.",
     force: false,
     ignore: undefined,
+    ignoreMissingUrl: false,
     output: `./3rdpartylicenses.json`,
     overrides: [],
     root: process.cwd(),

@@ -36,10 +36,10 @@ named "configuration". With Typescript the configuration could look like this:
 import { IReporterConfiguration, SearchMode } from "@weichwarenprojekt/license-reporter";
 
 export const configuration: Partial<IReporterConfiguration> = {
-    defaultLicenseText: "No license text found.",
-    force: false,
-    ignore: undefined,
-    output: `./3rdpartylicenses.json`,
+    defaultLicenseText: "", // default: "No license text found." 
+    force: true, // default: false
+    ignore: [`${__dirname}/test/**`], // default: undefined
+    output: "output.json", // default: "./3rdpartylicenses.json"
     overrides: [
         {
             name: "new-package",
@@ -47,9 +47,9 @@ export const configuration: Partial<IReporterConfiguration> = {
             licenseName: "MIT",
             licenseText: "LICENSE text for new-package",
         },
-    ],
-    root: process.cwd(),
-    search: SearchMode.recursive,
+    ], // default: []
+    root: "/path/to/root", // default: process.cwd()
+    search: SearchMode.flat, // default: SearchMode.recursive 
 };
 ```
 

@@ -1,6 +1,6 @@
 {
     "name": "@weichwarenprojekt/license-reporter",
-    "version": "0.2.3",
+    "version": "0.3.0",
     "description": "A tool that analyzes node modules and extracts the license information into a json file that can be used for rendering the third party software.",
     "scripts": {
         "build": "node esbuild.js",

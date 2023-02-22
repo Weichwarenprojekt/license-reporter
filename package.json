@@ -3,11 +3,12 @@
     "version": "0.3.1",
     "description": "A tool that analyzes node modules and extracts the license information into a json file that can be used for rendering the third party software.",
     "scripts": {
-        "build": "node esbuild.js",
+        "build": "node esbuild.js && tsc --emitDeclarationOnly",
         "cli": "ts-node src/index.ts",
         "bundledCli": "node dist/license-reporter.js",
         "test": "yarn build && jest",
-        "coverage": "yarn build && jest --coverage"
+        "coverage": "yarn build && jest --coverage",
+        "prepublishOnly": "yarn build"
     },
     "bin": "./dist/license-reporter.js",
     "main": "./dist/license-reporter.js",

@@ -2,7 +2,8 @@
 
 import { cli } from "./cli";
 
-// Export the configuration types
+// Public api
+export * from "./cli";
 export * from "./configuration";
 
 // Execute cli

@@ -1,4 +1,5 @@
 const esbuild = require("esbuild");
+const packageJson = require("./package.json");
 
 esbuild.build({
     entryPoints: ["./src/index.ts"],
@@ -6,5 +7,5 @@ esbuild.build({
     bundle: true,
     outfile: "./dist/license-reporter.js",
     platform: "node",
-    external: ["pnpapi"],
+    external: Object.keys(packageJson.dependencies),
 });

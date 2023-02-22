@@ -85,3 +85,10 @@ following:
     }
 ]
 ```
+
+# How does it work?
+
+The logic is rather simple. The tool searches for every package.json that is placed somewhere in the node_modules folder.
+Packages that are inside other packages will be filtered out. For every identified package.json the tool extracts the
+name, the license name, the homepage/url and the license text from adjacent LICENSE or COPYING files. Depending on the
+configuration of the tool, it will then proceed to inform you, if the information for a package is incomplete.

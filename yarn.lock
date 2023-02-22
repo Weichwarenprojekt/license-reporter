@@ -1123,7 +1123,7 @@ __metadata:
     "@jest/globals": ^29.4.1
     "@types/glob": ^8.0.1
     "@types/node": ^18.11.18
-    "@weichwarenprojekt/ts-importer": ^0.1.4
+    "@weichwarenprojekt/ts-importer": ^0.1.5
     "@weichwarenprojekt/wersion": ^0.1.2
     commander: ^9.4.1
     esbuild: ^0.17.10
@@ -1138,12 +1138,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@weichwarenprojekt/ts-importer@npm:^0.1.4":
-  version: 0.1.4
-  resolution: "@weichwarenprojekt/ts-importer@npm:0.1.4"
+"@weichwarenprojekt/ts-importer@npm:^0.1.5":
+  version: 0.1.5
+  resolution: "@weichwarenprojekt/ts-importer@npm:0.1.5"
   dependencies:
     typescript: ^4.9.5
-  checksum: 6bd66d7a788a79fe9a08a1adf6e8048eb8cb56bd84845d6e88622019d742fba816b3b3d14933abb39e65d89f6eeb5ef68c5fa0b9cb85f55b606df97118af7769
+  checksum: ccc5889b2d39ecb5d353966016a419301ff06a18a3066bfd47b2f7ada32c30e1d9f73927e7e8f79746aadd4d9aa8ca8005dcfecffdfc771206f1a6748fcdfb3f
   languageName: node
   linkType: hard
 

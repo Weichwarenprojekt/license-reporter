@@ -34,7 +34,7 @@
         "CLI"
     ],
     "dependencies": {
-        "@weichwarenprojekt/ts-importer": "^0.1.1",
+        "@weichwarenprojekt/ts-importer": "^0.1.3",
         "commander": "^9.4.1",
         "glob": "^8.1.0"
     },

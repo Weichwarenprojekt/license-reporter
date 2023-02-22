@@ -4,7 +4,7 @@
     "description": "A tool that analyzes node modules and extracts the license information into a json file that can be used for rendering the third party software.",
     "scripts": {
         "build": "node esbuild.js",
-        "cli": "node src/index.ts",
+        "cli": "ts-node src/index.ts",
         "bundledCli": "node dist/license-reporter.js",
         "test": "yarn build && jest",
         "coverage": "yarn build && jest --coverage"

@@ -41,12 +41,12 @@ function findPackages(config: IReporterConfiguration): string[] {
     // Sort out nested package.jsons if parent directory already contains a package.json
     let currentDirectory = packages.length > 0 ? `${path.dirname(packages[0])}/` : "";
     for (let i = 1; i < packages.length; ) {
-        if (packages[i].includes(currentDirectory)) {
-            packages.splice(i, 1);
-        } else if (i > 1 && packages[i - 2].includes(currentDirectory)) {
+        if (i > 1 && packages[i - 2].includes(currentDirectory)) {
             packages.splice(i - 2, 1);
             i--;
-        } else {
+        } else if (packages[i].includes(currentDirectory)) {
+            packages.splice(i, 1);
+        } else  {
             currentDirectory = `${path.dirname(packages[i])}/`;
             i++;
         }

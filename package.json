@@ -12,7 +12,7 @@
     },
     "bin": "./dist/license-reporter.js",
     "main": "./dist/license-reporter.js",
-    "types": "./src/index.ts",
+    "types": "./dist/index.d.ts",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Weichwarenprojekt/wp-license-reporter.git"

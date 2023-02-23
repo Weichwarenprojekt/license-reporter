@@ -57,7 +57,7 @@ export const configuration: Partial<IReporterConfiguration> = {
 For CommonJS modules you would use **module.exports.configuration** instead of **export const configuration**
 
 | Config             | Description                                                                                                                    |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+|--------------------|--------------------------------------------------------------------------------------------------------------------------------|
 | defaultLicenseText | The default license text that is used if the tool can't find a license text for a package.                                     |
 | force              | If true, license-reporter will ignore missing dependencies and exit with 0 anyways.                                            |
 | ignore             | Ignores the given paths when searching for packages.                                                                           |
@@ -85,6 +85,23 @@ following:
     }
 ]
 ```
+
+# Yarn Workspaces
+
+If you are using yarn (3) workspaces and your workspace includes a server or some package that you would want to hide from
+license report, you can add the following option to the package's package.json:
+
+```json
+{
+    "installConfig": {
+        "hoistingLimits": "workspaces"
+    }
+}
+```
+
+This will cause yarn to install all the dependencies that belong to this package into the package's directory. Now you
+can add the package directory to the ignore list in your license-reporter configuration and the dependencies will not
+be listed.
 
 # How does it work?
 

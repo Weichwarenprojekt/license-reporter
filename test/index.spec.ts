@@ -45,8 +45,6 @@ describe("Index E2E", () => {
                 "                                tool can't find a license text for a package.\n" +
                 '                                (default: "No license text found.")\n' +
                 "  --force                       Forces a good exit. (default: false)\n" +
-                "  --ignore <value>              Ignores the given paths when searching for\n" +
-                "                                packages.\n" +
                 "  --ignoreMissingUrl            If true, license-reporter will not fail and\n" +
                 "                                warn you because of missing urls. (default:\n" +
                 "                                false)\n" +

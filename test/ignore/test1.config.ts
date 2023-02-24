@@ -1,5 +1,5 @@
-import { IReporterConfiguration } from "../../src/configuration";
+import { IReporterConfiguration } from "../../src";
 
 export const configuration: Partial<IReporterConfiguration> = {
-    ignore: `${__dirname}/node_modules/**`,
+    ignore: ["node_modules"],
 };

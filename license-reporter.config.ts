@@ -1,7 +1,7 @@
 import { IReporterConfiguration } from "./src";
 
 export const configuration: Partial<IReporterConfiguration> = {
-    ignore: [`${__dirname}/test/**`],
+    ignore: ["test"],
     overrides: [
         {
             name: "exit",

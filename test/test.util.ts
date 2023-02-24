@@ -1,5 +1,6 @@
-import { IPackageInfo } from "../src/configuration";
+import { IPackageInfo } from "../src";
 import { jest } from "@jest/globals";
+import chalk from "chalk";
 
 /**
  * An empty mock for process stdout
@@ -35,4 +36,17 @@ export async function executeCli(...args: string[]): Promise<void> {
  */
 export function generateOutput(...packages: IPackageInfo[]) {
     return JSON.stringify(packages, null, 4);
+}
+
+/**
+ * Generates a warning string for incomplete package information
+ * @param missingField The field that is missing
+ * @param packageName The name of the package
+ */
+export function generateIncompleteInfoWarning(missingField: string, packageName: string): string {
+    return chalk.yellow(
+        `No "${chalk.bold(missingField)}" was found for the package "${chalk.bold(
+            packageName,
+        )}". You can add "overrides" to the reporter configuration to manually complete the information of a package.`,
+    );
 }

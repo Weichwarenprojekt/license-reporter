@@ -4,8 +4,10 @@ import fs from "fs";
 import { executeCli, generateOutput, processStdoutMock } from "../test.util";
 import { IPackageInfo } from "../../src";
 import { replaceBackslashes } from "../../src/util";
+import chalk from "chalk";
 
 const fsMocked = jest.mocked(fs);
+const consoleLog = jest.spyOn(console, "log").mockImplementation(() => {});
 const consoleWarn = jest.spyOn(console, "warn").mockImplementation(() => {});
 const consoleError = jest.spyOn(console, "error").mockImplementation(() => {});
 const processExit = jest.spyOn(process, "exit").mockImplementation((code) => {
@@ -45,11 +47,17 @@ describe("General CLI", () => {
 
     it("ignores invalid data", async () => {
         await executeCli("--root", __dirname);
+        const output = replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json"));
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            output,
             generateOutput(packageOne, packageFour, packageTwo, packageThree),
         );
-        expect(consoleWarn).toBeCalledWith("Could not find a configuration file!");
+        expect(consoleLog).toBeCalledWith("Found 1 folder...");
+        expect(consoleLog).toBeCalledWith(`- ${replaceBackslashes(path.resolve(__dirname, "node_modules"))}`);
+        expect(consoleLog).toBeCalledWith("Found 5 packages. Start processing...");
+        expect(consoleLog).toBeCalledWith(chalk.green(`Finished. Results were written to "${chalk.bold(output)}"`));
+        expect(consoleLog).toBeCalledTimes(4);
+        expect(consoleWarn).toBeCalledWith(chalk.yellow("Could not find a configuration file!"));
         expect(consoleWarn).toBeCalledTimes(1);
         expect(consoleError).toBeCalledWith(
             `Could not extract license information from "${replaceBackslashes(

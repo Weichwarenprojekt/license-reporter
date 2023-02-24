@@ -28,7 +28,6 @@ export async function cli(args: string[]): Promise<void> {
             defaultConfiguration.defaultLicenseText,
         )
         .option("--force", "Forces a good exit.", defaultConfiguration.force)
-        .option("--ignore <value>", "Ignores the given paths when searching for packages.", defaultConfiguration.ignore)
         .option(
             "--ignoreMissingUrl",
             "If true, license-reporter will not fail and warn you because of missing urls.",

@@ -3,9 +3,11 @@ import { executeCli, generateOutput } from "../test.util";
 import fs from "fs";
 import { IPackageInfo } from "../../src";
 import path from "path";
+import { replaceBackslashes } from "../../src/util";
 
 // Mock fs and console.warn
 const fsMocked = jest.mocked(fs);
+jest.spyOn(console, "log").mockImplementation(() => {});
 jest.spyOn(console, "warn").mockImplementation(() => {});
 
 // Package info for packageOne & packageTwo
@@ -30,7 +32,7 @@ describe('Parameter "--root"', () => {
     it("collects all packages if set to the root directory", async () => {
         await executeCli("--root", __dirname, "--config", "test.config.ts");
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "test.json"),
+            replaceBackslashes(path.resolve(__dirname, "test.json")),
             generateOutput(packageOne, packageTwo),
         );
     });
@@ -38,7 +40,7 @@ describe('Parameter "--root"', () => {
     it("only collects nested packages if set to nested directory", async () => {
         await executeCli("--root", __dirname + "/nested", "--config", "nested-test.config.ts");
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "nested", "nested-test.json"),
+            replaceBackslashes(path.resolve(__dirname, "nested", "nested-test.json")),
             generateOutput(packageTwo),
         );
     });

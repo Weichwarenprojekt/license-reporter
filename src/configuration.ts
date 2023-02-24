@@ -1,6 +1,8 @@
 import { OptionValues } from "commander";
 import path from "path";
 import { loadModule } from "@weichwarenprojekt/ts-importer";
+import { replaceBackslashes } from "./util";
+import chalk from "chalk";
 
 /**
  * The possible search modes
@@ -30,12 +32,14 @@ export interface IPackageInfo {
  * The parameters that can be configured within the configuration file
  */
 export interface IReporterConfiguration {
+    /** Add a folder that contains packages */
+    addFolder: string[];
     /** The default license text that is used if the tool can't find a license text for a package */
     defaultLicenseText: string;
     /** Forces a good exit. */
     force: boolean;
     /** Ignores the given paths when searching for packages */
-    ignore: string | string[] | undefined;
+    ignore: string[];
     /** If true, license-reporter will not fail and warn you because of missing urls */
     ignoreMissingUrl: boolean;
     /** The path to the output file */
@@ -60,10 +64,11 @@ export interface IReporterCliConfiguration extends IReporterConfiguration {
  * The default configuration
  */
 export const defaultConfiguration: IReporterCliConfiguration = {
+    addFolder: [],
     config: `./license-reporter.config.ts`,
     defaultLicenseText: "No license text found.",
     force: false,
-    ignore: undefined,
+    ignore: [],
     ignoreMissingUrl: false,
     output: `./3rdpartylicenses.json`,
     overrides: [],
@@ -76,15 +81,36 @@ export const defaultConfiguration: IReporterCliConfiguration = {
  * @param options The configuration parameters that were collected by commander
  */
 export async function loadConfiguration(options: OptionValues): Promise<IReporterConfiguration> {
-    const cliConfig = Object.assign(defaultConfiguration, options);
+    let cliConfig = Object.assign(defaultConfiguration, options);
     try {
         let configPath = cliConfig.config;
         if (!path.isAbsolute(configPath)) configPath = path.resolve(cliConfig.root, configPath);
         const configImport = loadModule<{ configuration: IReporterConfiguration }>(configPath);
         if (!configImport.configuration) console.warn('The specified configuration does not export a "configuration"');
-        return Object.assign(cliConfig, configImport.configuration);
+        cliConfig = Object.assign(cliConfig, configImport.configuration);
     } catch (e) {
-        console.warn("Could not find a configuration file!");
-        return cliConfig;
+        console.warn(chalk.yellow("Could not find a configuration file!"));
     }
+    return prepareConfiguration(cliConfig);
+}
+
+/**
+ * Prepares the configuration
+ * @param config
+ */
+function prepareConfiguration(config: IReporterConfiguration): IReporterConfiguration {
+    // Ensure that the root & output path is absolute
+    if (!path.isAbsolute(config.root)) config.root = path.resolve(process.cwd(), config.root);
+    config.root = replaceBackslashes(config.root);
+    if (!path.isAbsolute(config.output)) config.output = path.resolve(config.root, config.output);
+    config.output = replaceBackslashes(config.output);
+    // Ensure that all ignore paths are absolute and that backslashes are replaced
+    config.ignore = config.ignore.map((folder) => {
+        return replaceBackslashes(path.isAbsolute(folder) ? folder : path.resolve(config.root, folder));
+    });
+    // Ensure that all added directories are absolute and that backslashes are replaced
+    config.addFolder = config.addFolder.map((folder) => {
+        return replaceBackslashes(path.isAbsolute(folder) ? folder : path.resolve(config.root, folder));
+    });
+    return config;
 }

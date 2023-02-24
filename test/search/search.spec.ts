@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { executeCli, generateOutput } from "../test.util";
 import fs from "fs";
-import { IPackageInfo, SearchMode } from "../../src/configuration";
+import { IPackageInfo, SearchMode } from "../../src";
 import path from "path";
+import { replaceBackslashes } from "../../src/util";
 
 // Mock fs and console.warn
 const fsMocked = jest.mocked(fs);
+
 jest.spyOn(console, "warn").mockImplementation(() => {});
+jest.spyOn(console, "log").mockImplementation(() => {});
 
 // Package info for packageOne & packageTwo
 const packageOne: IPackageInfo = {
@@ -27,18 +30,18 @@ describe('Parameter "--search"', () => {
         jest.clearAllMocks();
     });
 
-    it('collects all packages if set to "search"', async () => {
+    it('collects all packages if set to "recursive"', async () => {
         await executeCli("--root", __dirname, "--search", SearchMode.recursive);
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput(packageOne, packageTwo),
         );
     });
 
-    it('is "search" by default', async () => {
+    it('is "recursive" by default', async () => {
         await executeCli("--root", __dirname);
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput(packageOne, packageTwo),
         );
     });
@@ -46,7 +49,7 @@ describe('Parameter "--search"', () => {
     it('only collects packages from root node_modules if set to "flat"', async () => {
         await executeCli("--root", __dirname, "--search", SearchMode.flat);
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput(packageOne),
         );
     });
@@ -54,7 +57,7 @@ describe('Parameter "--search"', () => {
     it("only collects packages from root node_modules if set to invalid value", async () => {
         await executeCli("--root", __dirname, "--search", "nonSense");
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput(packageOne),
         );
     });

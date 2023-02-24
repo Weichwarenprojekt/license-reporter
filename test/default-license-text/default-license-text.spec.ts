@@ -1,9 +1,12 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import path from "path";
 import fs from "fs";
-import { executeCli, generateOutput } from "../test.util";
+import { executeCli, generateIncompleteInfoWarning, generateOutput } from "../test.util";
+import chalk from "chalk";
+import { replaceBackslashes } from "../../src/util";
 
 const fsMocked = jest.mocked(fs);
+jest.spyOn(console, "log").mockImplementation(() => {});
 const consoleWarn = jest.spyOn(console, "warn").mockImplementation(() => {});
 const processExit = jest.spyOn(process, "exit").mockImplementation((code) => {
     throw new Error(`Process.exit(${code})`);
@@ -21,13 +24,11 @@ describe('Parameter "--defaultLicenseText"', () => {
             expect(e).toBeInstanceOf(Error);
         }
         expect(processExit).toBeCalledWith(1);
-        expect(consoleWarn).toBeCalledWith("Could not find a configuration file!");
-        expect(consoleWarn).toBeCalledWith(
-            'No "licenseText" was found for the package "incomplete". You can add "overrides" to the reporter configuration to manually complete the information of a package.',
-        );
+        expect(consoleWarn).toBeCalledWith(chalk.yellow("Could not find a configuration file!"));
+        expect(consoleWarn).toBeCalledWith(generateIncompleteInfoWarning("licenseText", "incomplete"));
         expect(consoleWarn).toBeCalledTimes(2);
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput({
                 name: "incomplete",
                 url: "https://incomplete.de",
@@ -39,10 +40,10 @@ describe('Parameter "--defaultLicenseText"', () => {
 
     it("completes license text by default", async () => {
         await executeCli("--root", __dirname);
-        expect(consoleWarn).toBeCalledWith("Could not find a configuration file!");
+        expect(consoleWarn).toBeCalledWith(chalk.yellow("Could not find a configuration file!"));
         expect(consoleWarn).toBeCalledTimes(1);
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput({
                 name: "incomplete",
                 url: "https://incomplete.de",
@@ -54,10 +55,10 @@ describe('Parameter "--defaultLicenseText"', () => {
 
     it("completes license text (cli)", async () => {
         await executeCli("--root", __dirname, "--defaultLicenseText", "Default license text from cli.");
-        expect(consoleWarn).toBeCalledWith("Could not find a configuration file!");
+        expect(consoleWarn).toBeCalledWith(chalk.yellow("Could not find a configuration file!"));
         expect(consoleWarn).toBeCalledTimes(1);
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput({
                 name: "incomplete",
                 url: "https://incomplete.de",
@@ -71,7 +72,7 @@ describe('Parameter "--defaultLicenseText"', () => {
         await executeCli("--root", __dirname, "--config", "test.config.ts");
         expect(consoleWarn).toBeCalledTimes(0);
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput({
                 name: "incomplete",
                 url: "https://incomplete.de",

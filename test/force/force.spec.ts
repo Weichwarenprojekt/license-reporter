@@ -3,8 +3,10 @@ import path from "path";
 import fs from "fs";
 import { executeCli, generateOutput } from "../test.util";
 import { IPackageInfo } from "../../src";
+import { replaceBackslashes } from "../../src/util";
 
 const fsMocked = jest.mocked(fs);
+jest.spyOn(console, "log").mockImplementation(() => {});
 jest.spyOn(console, "warn").mockImplementation(() => {});
 const processExit = jest.spyOn(process, "exit").mockImplementation((code) => {
     throw new Error(`Process.exit(${code})`);
@@ -37,7 +39,7 @@ describe('Parameter "--force"', () => {
         }
         expect(processExit).toBeCalledWith(1);
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput(incompletePackage),
         );
     });
@@ -45,7 +47,7 @@ describe('Parameter "--force"', () => {
     it("ignores incomplete info if force is set", async () => {
         await executeCli("--root", __dirname, "--force");
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput(incompletePackage),
         );
     });
@@ -53,7 +55,7 @@ describe('Parameter "--force"', () => {
     it("exits program normally if info complete", async () => {
         await executeCli("--root", __dirname, "--config", "test.config.ts");
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput(completePackage),
         );
     });
@@ -61,7 +63,7 @@ describe('Parameter "--force"', () => {
     it("exits program normally if info complete and force is set", async () => {
         await executeCli("--root", __dirname, "--config", "test.config.ts", "--force");
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput(completePackage),
         );
     });

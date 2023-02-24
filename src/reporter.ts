@@ -4,6 +4,7 @@ import glob from "glob";
 import path from "path";
 import fs from "fs";
 import { replaceBackslashes } from "./util";
+import chalk from "chalk";
 
 /**
  * Analyzes the node modules and generates a report
@@ -25,18 +26,51 @@ export async function reportLicenses(options: OptionValues): Promise<void> {
  * @param config The configuration
  */
 function findPackages(config: IReporterConfiguration): string[] {
-    let globPath = config.search === SearchMode.recursive ? path.resolve(config.root, "**/") : config.root;
-    globPath = path.resolve(globPath, "node_modules", "**", "package.json");
+    // Get the package folders
+    const packageFolders = findPackageFolders(config);
 
-    // Make sure to convert backslashes to forward slashes as glob only works with forward slashes
-    globPath = replaceBackslashes(globPath);
-    if (config.ignore) {
-        if (!Array.isArray(config.ignore)) config.ignore = [config.ignore];
-        for (let i = 0; i < config.ignore.length; i++) {
-            config.ignore[i] = replaceBackslashes(config.ignore[i]);
-        }
+    // Search for packageJsons in all the folders
+    let packages: string[] = [];
+    for (const folder of packageFolders) {
+        packages.push(...glob.sync(`${folder}/**/package.json`));
     }
-    const packages = glob.sync(globPath, { ignore: config.ignore });
+
+    return preparePackages(config, packages);
+}
+
+/**
+ * Searches for the matching node_module folders
+ * @param config The configuration
+ */
+function findPackageFolders(config: IReporterConfiguration): string[] {
+    // Find the matching folders and filter out ignored once
+    let globPath = config.search === SearchMode.recursive ? path.resolve(config.root, "**/") : config.root;
+    globPath = path.resolve(globPath, "node_modules");
+    globPath = replaceBackslashes(globPath);
+    let packageFolders = glob.sync(globPath, { ignore: "**/node_modules/**/node_modules/**" });
+    packageFolders = packageFolders.filter((directory) => {
+        for (const ignorePath of config.ignore) if (directory.includes(ignorePath)) return false;
+        return true;
+    });
+    packageFolders.push(...config.addFolder);
+
+    // Inform the user
+    console.log(`Found ${packageFolders.length} ${packageFolders.length === 1 ? "folder" : "folders"}...`);
+    for (const folder of packageFolders) console.log(`- ${folder}`);
+    return packageFolders;
+}
+
+/**
+ * Filters and sorts the package paths
+ * @param config The configuration
+ * @param allPackages All the found packages
+ */
+function preparePackages(config: IReporterConfiguration, allPackages: string[]): string[] {
+    // Filter out specific packages
+    const packages = allPackages.filter((packagePath) => {
+        for (const ignorePath of config.ignore) if (packagePath.includes(ignorePath)) return false;
+        return true;
+    });
 
     // Sort out nested package.jsons if parent directory already contains a package.json
     let currentDirectory = packages.length > 0 ? `${path.dirname(packages[0])}/` : "";
@@ -46,11 +80,16 @@ function findPackages(config: IReporterConfiguration): string[] {
             i--;
         } else if (packages[i].includes(currentDirectory)) {
             packages.splice(i, 1);
-        } else  {
+        } else {
             currentDirectory = `${path.dirname(packages[i])}/`;
             i++;
         }
     }
+    console.log(`Found ${packages.length} ${packages.length === 1 ? "package" : "packages"}. Start processing...`);
+
+    // Alphabetically sort the paths
+    packages.sort();
+
     return packages;
 }
 
@@ -82,7 +121,7 @@ function extractPackageInformation(config: IReporterConfiguration, packagePath: 
     // Parse the package json
     const packageJson = JSON.parse(fs.readFileSync(packagePath, "utf-8"));
     // Make sure to convert backslashes to forward slashes as glob only works with forward slashes
-    const packageDirectory = path.dirname(packagePath).replace(/\\/g, "/");
+    const packageDirectory = replaceBackslashes(path.dirname(packagePath));
     const packageInfo: IPackageInfo = {
         name: packageJson.name,
         url: packageJson.homepage,
@@ -142,19 +181,20 @@ function prepareInformation(config: IReporterConfiguration, rawInfo: Map<string,
  */
 function validateInformation(config: IReporterConfiguration, infos: IPackageInfo[]): boolean {
     let isInfoComplete = true;
-    const hint =
-        'You can add "overrides" to the reporter configuration to manually complete the information of a package.';
-    const handleIncompleteInfo = (message: string): void => {
+    const handleIncompleteInfo = (missingField: string, packageName: string): void => {
         isInfoComplete = false;
-        console.warn(message);
+        console.warn(
+            chalk.yellow(
+                `No "${chalk.bold(missingField)}" was found for the package "${chalk.bold(
+                    packageName,
+                )}". You can add "overrides" to the reporter configuration to manually complete the information of a package.`,
+            ),
+        );
     };
     for (const info of infos) {
-        if (!info.url && !config.ignoreMissingUrl)
-            handleIncompleteInfo(`No "url" was found for the package "${info.name}". ${hint}`);
-        if (!info.licenseName)
-            handleIncompleteInfo(`No "licenseName" was found for the package "${info.name}". ${hint}`);
-        if (!info.licenseText)
-            handleIncompleteInfo(`No "licenseText" was found for the package "${info.name}". ${hint}`);
+        if (!info.url && !config.ignoreMissingUrl) handleIncompleteInfo("url", info.name);
+        if (!info.licenseName) handleIncompleteInfo("licenseName", info.name);
+        if (!info.licenseText) handleIncompleteInfo("licenseText", info.name);
     }
     return isInfoComplete;
 }
@@ -166,7 +206,6 @@ function validateInformation(config: IReporterConfiguration, infos: IPackageInfo
  */
 function exportInformation(config: IReporterConfiguration, infos: IPackageInfo[]): void {
     fs.mkdirSync(path.dirname(config.output), { recursive: true });
-    let outputPath = config.output;
-    if (!path.isAbsolute(outputPath)) outputPath = path.resolve(config.root, outputPath);
-    fs.writeFileSync(outputPath, JSON.stringify(infos, null, 4));
+    fs.writeFileSync(config.output, JSON.stringify(infos, null, 4));
+    console.log(chalk.green(`Finished. Results were written to "${chalk.bold(config.output)}"`));
 }

@@ -1,11 +1,14 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { executeCli, generateOutput } from "../test.util";
+import { executeCli, generateIncompleteInfoWarning, generateOutput } from "../test.util";
 import fs from "fs";
 import { IPackageInfo } from "../../src";
 import path from "path";
+import { replaceBackslashes } from "../../src/util";
+import chalk from "chalk";
 
 // Mock fs and console.warn
 const fsMocked = jest.mocked(fs);
+jest.spyOn(console, "log").mockImplementation(() => {});
 const consoleWarn = jest.spyOn(console, "warn").mockImplementation(() => {});
 
 // Package info for incomplete and complete package
@@ -60,18 +63,12 @@ describe('Parameter "--override"', () => {
     it("notifies user if package info should be provided manually", async () => {
         await executeCli("--root", __dirname, "--force", "--defaultLicenseText", "");
         expect(consoleWarn).toBeCalledTimes(4);
-        expect(consoleWarn).toBeCalledWith("Could not find a configuration file!");
-        expect(consoleWarn).toBeCalledWith(
-            'No "url" was found for the package "another-incomplete-package". You can add "overrides" to the reporter configuration to manually complete the information of a package.',
-        );
-        expect(consoleWarn).toBeCalledWith(
-            'No "licenseName" was found for the package "incomplete-package". You can add "overrides" to the reporter configuration to manually complete the information of a package.',
-        );
-        expect(consoleWarn).toBeCalledWith(
-            'No "licenseText" was found for the package "incomplete-package". You can add "overrides" to the reporter configuration to manually complete the information of a package.',
-        );
+        expect(consoleWarn).toBeCalledWith(chalk.yellow("Could not find a configuration file!"));
+        expect(consoleWarn).toBeCalledWith(generateIncompleteInfoWarning("url", "another-incomplete-package"));
+        expect(consoleWarn).toBeCalledWith(generateIncompleteInfoWarning("licenseName", "incomplete-package"));
+        expect(consoleWarn).toBeCalledWith(generateIncompleteInfoWarning("licenseText", "incomplete-package"));
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput(packageAnotherIncomplete, packageIncomplete),
         );
     });
@@ -80,7 +77,7 @@ describe('Parameter "--override"', () => {
         await executeCli("--root", __dirname, "--config", "test1.config.ts");
         expect(consoleWarn).not.toBeCalled();
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput(packageAnotherComplete, packageComplete1),
         );
     });
@@ -89,7 +86,7 @@ describe('Parameter "--override"', () => {
         await executeCli("--root", __dirname, "--config", "test2.config.ts");
         expect(consoleWarn).not.toBeCalled();
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput(packageAnotherComplete, packageComplete2),
         );
     });
@@ -98,7 +95,7 @@ describe('Parameter "--override"', () => {
         await executeCli("--root", __dirname, "--config", "test3.config.ts");
         expect(consoleWarn).not.toBeCalled();
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput(packageAnotherComplete, packageAnother, packageComplete1),
         );
     });
@@ -106,27 +103,15 @@ describe('Parameter "--override"', () => {
     it("also informs user if new override is incomplete", async () => {
         await executeCli("--root", __dirname, "--config", "test4.config.ts", "--force", "--defaultLicenseText", "");
         expect(fsMocked.writeFileSync).toBeCalledWith(
-            path.resolve(__dirname, "3rdpartylicenses.json"),
+            replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput(packageAnotherIncomplete, packageIncomplete, packageNew),
         );
         expect(consoleWarn).toBeCalledTimes(6);
-        expect(consoleWarn).toBeCalledWith(
-            'No "url" was found for the package "another-incomplete-package". You can add "overrides" to the reporter configuration to manually complete the information of a package.',
-        );
-        expect(consoleWarn).toBeCalledWith(
-            'No "licenseName" was found for the package "incomplete-package". You can add "overrides" to the reporter configuration to manually complete the information of a package.',
-        );
-        expect(consoleWarn).toBeCalledWith(
-            'No "licenseText" was found for the package "incomplete-package". You can add "overrides" to the reporter configuration to manually complete the information of a package.',
-        );
-        expect(consoleWarn).toBeCalledWith(
-            'No "url" was found for the package "new-incomplete-package". You can add "overrides" to the reporter configuration to manually complete the information of a package.',
-        );
-        expect(consoleWarn).toBeCalledWith(
-            'No "licenseName" was found for the package "new-incomplete-package". You can add "overrides" to the reporter configuration to manually complete the information of a package.',
-        );
-        expect(consoleWarn).toBeCalledWith(
-            'No "licenseText" was found for the package "new-incomplete-package". You can add "overrides" to the reporter configuration to manually complete the information of a package.',
-        );
+        expect(consoleWarn).toBeCalledWith(generateIncompleteInfoWarning("url", "another-incomplete-package"));
+        expect(consoleWarn).toBeCalledWith(generateIncompleteInfoWarning("licenseName", "incomplete-package"));
+        expect(consoleWarn).toBeCalledWith(generateIncompleteInfoWarning("licenseText", "incomplete-package"));
+        expect(consoleWarn).toBeCalledWith(generateIncompleteInfoWarning("url", "new-incomplete-package"));
+        expect(consoleWarn).toBeCalledWith(generateIncompleteInfoWarning("licenseName", "new-incomplete-package"));
+        expect(consoleWarn).toBeCalledWith(generateIncompleteInfoWarning("licenseText", "new-incomplete-package"));
     });
 });

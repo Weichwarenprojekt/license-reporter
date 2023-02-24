@@ -43,7 +43,7 @@ describe('Parameter "--output"', () => {
     });
 
     it("exports into path provided by the config even if cli parameter is set", async () => {
-        await executeCli("--root", __dirname, "--config", "test.config.ts", "--output", "C:/test.json");
+        await executeCli("--root", __dirname, "--config", "test.config.ts", "--output", "/test/test.json");
         expect(fsMocked.writeFileSync).toBeCalledWith(replaceBackslashes(path.resolve(__dirname, "fromConfig/test.json")), "[]");
     });
 
@@ -56,7 +56,7 @@ describe('Parameter "--output"', () => {
 
         jest.clearAllMocks();
 
-        await executeCli("--root", __dirname, "--output", "C:/absolute/path/in/new/directory/test.json");
-        expect(fsMocked.mkdirSync).toBeCalledWith("C:/absolute/path/in/new/directory", { recursive: true });
+        await executeCli("--root", __dirname, "--output", "/absolute/path/in/new/directory/test.json");
+        expect(fsMocked.mkdirSync).toBeCalledWith("/absolute/path/in/new/directory", { recursive: true });
     });
 });

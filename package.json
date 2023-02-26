@@ -15,7 +15,7 @@
     "types": "./dist/index.d.ts",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Weichwarenprojekt/wp-license-reporter.git"
+        "url": "git+https://github.com/Weichwarenprojekt/license-reporter.git"
     },
     "author": "Weichwarenprojekt <info@weichwarenprojekt.de> (https://weichwarenprojekt.de/)",
     "contributors": [
@@ -23,9 +23,9 @@
     ],
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/Weichwarenprojekt/wp-license-reporter/issues"
+        "url": "https://github.com/Weichwarenprojekt/license-reporter/issues"
     },
-    "homepage": "https://github.com/Weichwarenprojekt/wp-license-reporter#readme",
+    "homepage": "https://github.com/Weichwarenprojekt/license-reporter#readme",
     "keywords": [
         "license",
         "release",

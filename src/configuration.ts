@@ -32,7 +32,7 @@ export interface IPackageInfo {
  * The parameters that can be configured within the configuration file
  */
 export interface IReporterConfiguration {
-    /** Add a folder that contains packages */
+    /** Add a folder that contains packages. Useful if libraries are in a folder that isn't named "node_modules". */
     addFolder: string[];
     /** The default license text that is used if the tool can't find a license text for a package */
     defaultLicenseText: string;

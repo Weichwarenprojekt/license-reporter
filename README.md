@@ -36,9 +36,10 @@ named "configuration". With Typescript the configuration could look like this:
 import { IReporterConfiguration, SearchMode } from "@weichwarenprojekt/license-reporter";
 
 export const configuration: Partial<IReporterConfiguration> = {
+    addFolder: ["package_folder_other_than_node_modules"], // default: []
     defaultLicenseText: "", // default: "No license text found."
     force: true, // default: false
-    ignore: [`${__dirname}/test/**`], // default: undefined
+    ignore: ["test"], // default: []
     ignoreMissingUrl: true, // default: false
     output: "output.json", // default: "./3rdpartylicenses.json"
     overrides: [
@@ -58,6 +59,7 @@ For CommonJS modules you would use **module.exports.configuration** instead of *
 
 | Config             | Description                                                                                                                    |
 |--------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| addFolder          | Adds a folder that contain packages. Useful if libraries are in a folder that isn't named "node_modules".                      |
 | defaultLicenseText | The default license text that is used if the tool can't find a license text for a package.                                     |
 | force              | If true, license-reporter will ignore missing dependencies and exit with 0 anyways.                                            |
 | ignore             | Ignores the given paths when searching for packages.                                                                           |

@@ -1116,6 +1116,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@weichwarenprojekt/configuration@npm:^0.1.3":
+  version: 0.1.3
+  resolution: "@weichwarenprojekt/configuration@npm:0.1.3"
+  peerDependencies:
+    tslib: 2.4.1
+  checksum: f9b3098bfa5410c4db6ee56de6f33db40673b1dee2e1d4d39a3b7e6be9e4b4a48e18e147b38a803543b55eff1597c8b30438585b5e1e205c90629a45f1b5aa6a
+  languageName: node
+  linkType: hard
+
 "@weichwarenprojekt/license-reporter@workspace:.":
   version: 0.0.0-use.local
   resolution: "@weichwarenprojekt/license-reporter@workspace:."
@@ -1123,6 +1132,7 @@ __metadata:
     "@jest/globals": ^29.4.1
     "@types/glob": ^8.0.1
     "@types/node": ^18.11.18
+    "@weichwarenprojekt/configuration": ^0.1.3
     "@weichwarenprojekt/ts-importer": ^0.1.5
     "@weichwarenprojekt/wersion": ^0.1.2
     chalk: ^4.1.2

@@ -3,7 +3,7 @@ const packageJson = require("./package.json");
 const fs = require("fs");
 
 // Delete the dist folder
-const deleteDist = () =>  fs.rmSync("dist", { force: true, recursive: true });
+const deleteDist = () => fs.rmSync("dist", { force: true, recursive: true });
 deleteDist();
 
 // Bundle the cli

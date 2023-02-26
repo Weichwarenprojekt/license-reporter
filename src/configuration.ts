@@ -104,9 +104,10 @@ function prepareConfiguration(config: IReporterConfiguration): IReporterConfigur
     config.root = replaceBackslashes(config.root);
     if (!path.isAbsolute(config.output)) config.output = path.resolve(config.root, config.output);
     config.output = replaceBackslashes(config.output);
-    // Ensure that all ignore paths are absolute and that backslashes are replaced
+    // Ensure that all ignore paths are absolute and that backslashes are replaced and that the path ends with a slash
     config.ignore = config.ignore.map((folder) => {
-        return replaceBackslashes(path.isAbsolute(folder) ? folder : path.resolve(config.root, folder));
+        const ignorePath = replaceBackslashes(path.isAbsolute(folder) ? folder : path.resolve(config.root, folder));
+        return ignorePath.endsWith("/") ? ignorePath : `${ignorePath}/`;
     });
     // Ensure that all added directories are absolute and that backslashes are replaced
     config.addFolder = config.addFolder.map((folder) => {

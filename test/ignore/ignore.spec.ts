@@ -28,6 +28,12 @@ const packageThird: IPackageInfo = {
     licenseName: "THIRD",
     licenseText: "LICENSE for third",
 };
+const packageFourth: IPackageInfo = {
+    name: "fourth",
+    url: "https://fourth.de",
+    licenseName: "FOURTH",
+    licenseText: "LICENSE for fourth",
+};
 
 describe('Parameter "--ignore"', () => {
     beforeEach(() => {
@@ -38,7 +44,7 @@ describe('Parameter "--ignore"', () => {
         await executeCli("--root", __dirname);
         expect(fsMocked.writeFileSync).toBeCalledWith(
             replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
-            generateOutput(packageOne, packageTwo, packageThird),
+            generateOutput(packageOne, packageFourth, packageTwo, packageThird),
         );
     });
 
@@ -46,15 +52,15 @@ describe('Parameter "--ignore"', () => {
         await executeCli("--root", __dirname, "--config", "test1.config.ts");
         expect(fsMocked.writeFileSync).toBeCalledWith(
             replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
-            generateOutput(packageTwo, packageThird),
+            generateOutput(packageFourth, packageTwo, packageThird),
         );
     });
 
-    it("ignores both folders", async () => {
+    it("ignores test and node_modules", async () => {
         await executeCli("--root", __dirname, "--config", "test2.config.ts");
         expect(fsMocked.writeFileSync).toBeCalledWith(
             replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
-            generateOutput(),
+            generateOutput(packageFourth),
         );
     });
 
@@ -62,7 +68,7 @@ describe('Parameter "--ignore"', () => {
         await executeCli("--root", __dirname, "--config", "test3.config.ts");
         expect(fsMocked.writeFileSync).toBeCalledWith(
             replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
-            generateOutput(packageOne, packageThird),
+            generateOutput(packageOne, packageFourth, packageThird),
         );
     });
 });

@@ -3,6 +3,7 @@ node_modules
 dist
 coverage
 .idea
+.yarn/cache
 
 # Allow node_modules in the test folder
 !test/**/node_modules

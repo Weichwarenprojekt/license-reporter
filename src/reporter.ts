@@ -5,6 +5,7 @@ import path from "path";
 import fs from "fs";
 import { replaceBackslashes } from "./util";
 import chalk from "chalk";
+import { EOL } from "os";
 
 /**
  * Analyzes the node modules and generates a report
@@ -206,6 +207,6 @@ function validateInformation(config: IReporterConfiguration, infos: IPackageInfo
  */
 function exportInformation(config: IReporterConfiguration, infos: IPackageInfo[]): void {
     fs.mkdirSync(path.dirname(config.output), { recursive: true });
-    fs.writeFileSync(config.output, JSON.stringify(infos, null, 4));
+    fs.writeFileSync(config.output, `${JSON.stringify(infos, null, 4)}${EOL}`);
     console.log(chalk.green(`Finished. Results were written to "${chalk.bold(config.output)}"`));
 }

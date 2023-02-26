@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import path from "path";
 import fs from "fs";
-import { executeCli } from "../test.util";
+import { executeCli, generateOutput } from "../test.util";
 import { replaceBackslashes } from "../../src/util";
 import chalk from "chalk";
 
@@ -18,7 +18,7 @@ describe('Parameter "--config"', () => {
         await executeCli("--root", __dirname);
         expect(fsMocked.writeFileSync).toBeCalledWith(
             replaceBackslashes(path.resolve(__dirname, "license-reporter.config.json")),
-            "[]",
+            generateOutput(),
         );
     });
 
@@ -26,7 +26,7 @@ describe('Parameter "--config"', () => {
         await executeCli("--root", __dirname, "--config", "different.config.ts");
         expect(fsMocked.writeFileSync).toBeCalledWith(
             replaceBackslashes(path.resolve(__dirname, "differentConfig.json")),
-            "[]",
+            generateOutput(),
         );
     });
 
@@ -34,7 +34,7 @@ describe('Parameter "--config"', () => {
         await executeCli("--root", __dirname, "--config", "js.config.js");
         expect(fsMocked.writeFileSync).toBeCalledWith(
             replaceBackslashes(path.resolve(__dirname, "jsConfig.json")),
-            "[]",
+            generateOutput(),
         );
     });
 
@@ -44,7 +44,7 @@ describe('Parameter "--config"', () => {
         // Uses default config
         expect(fsMocked.writeFileSync).toBeCalledWith(
             replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
-            "[]",
+            generateOutput(),
         );
     });
 
@@ -52,7 +52,7 @@ describe('Parameter "--config"', () => {
         await executeCli("--root", __dirname, "--config", "nested/nested.config.ts");
         expect(fsMocked.writeFileSync).toBeCalledWith(
             replaceBackslashes(path.resolve(__dirname, "nestedConfig.json")),
-            "[]",
+            generateOutput(),
         );
     });
 
@@ -60,7 +60,7 @@ describe('Parameter "--config"', () => {
         await executeCli("--root", "test/config/nested", "--config", "nested.config.ts");
         expect(fsMocked.writeFileSync).toBeCalledWith(
             replaceBackslashes(path.resolve(__dirname, "nested/nestedConfig.json")),
-            "[]",
+            generateOutput(),
         );
     });
 
@@ -69,7 +69,7 @@ describe('Parameter "--config"', () => {
         expect(consoleWarn).toBeCalledWith(chalk.yellow("Could not find a configuration file!"));
         expect(fsMocked.writeFileSync).toBeCalledWith(
             replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
-            "[]",
+            generateOutput(),
         );
     });
 });

@@ -1,6 +1,7 @@
 import { IPackageInfo } from "../src";
 import { jest } from "@jest/globals";
 import chalk from "chalk";
+import { EOL } from "os";
 
 /**
  * An empty mock for process stdout
@@ -35,7 +36,7 @@ export async function executeCli(...args: string[]): Promise<void> {
  * @param packages The package info
  */
 export function generateOutput(...packages: IPackageInfo[]) {
-    return JSON.stringify(packages, null, 4);
+    return `${JSON.stringify(packages, null, 4)}${EOL}`;
 }
 
 /**

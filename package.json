@@ -6,9 +6,9 @@
         "build": "node esbuild.js && tsc --emitDeclarationOnly",
         "cli": "ts-node src/index.ts",
         "bundledCli": "node dist/license-reporter.js",
-        "test": "yarn build && jest",
-        "coverage": "yarn build && jest --coverage",
-        "prepublishOnly": "yarn build"
+        "test": "npm run build && jest",
+        "coverage": "npm run build && jest --coverage",
+        "prepublishOnly": "npm run build"
     },
     "bin": "./dist/license-reporter.js",
     "main": "./dist/license-reporter.js",

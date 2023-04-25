@@ -19,5 +19,5 @@ jobs:
             # Run the server tests
             - name: Run Tests
               run: |
-                  yarn
-                  yarn test
+                  npm ci
+                  npm run test

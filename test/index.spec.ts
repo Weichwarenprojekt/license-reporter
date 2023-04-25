@@ -8,7 +8,7 @@ function executeBin(...args: string[]): Promise<{ code: number | null; stdout: s
     return new Promise((resolve) => {
         let stdout = "";
         let stderr = "";
-        const child = spawn("yarn bundledCli", args, { shell: true });
+        const child = spawn("npm run bundledCli --", args, { shell: true });
         child.stdout.on("data", (data) => (stdout += data));
         child.stderr.on("data", (data) => (stderr += data));
         child.on("close", function (code) {
@@ -26,7 +26,7 @@ describe("Index E2E", () => {
         const result = await executeBin("--help");
         expect(result.code).toEqual(0);
         expect(result.stderr).toEqual("");
-        expect(result.stdout).toEqual(
+        expect(result.stdout).toContain(
             "Usage: license-reporter [options]\n" +
                 "\n" +
                 " __        ______    _     _                           ____                       _\n" +

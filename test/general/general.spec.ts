@@ -39,6 +39,12 @@ const packageFour: IPackageInfo = {
     licenseName: "FOURTH",
     licenseText: "LICENSE for fourth",
 };
+const packageInvalid2: IPackageInfo = {
+    name: "invalid2",
+    url: "",
+    licenseName: "",
+    licenseText: "No license text found.",
+};
 
 describe("General CLI", () => {
     beforeEach(() => {
@@ -46,19 +52,39 @@ describe("General CLI", () => {
     });
 
     it("ignores invalid data", async () => {
-        await executeCli("--root", __dirname);
+        try {
+            await executeCli("--root", __dirname);
+        } catch (e) {
+            expect(e).toBeInstanceOf(Error);
+        }
+        expect(processExit).toBeCalledWith(1);
         const output = replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json"));
         expect(fsMocked.writeFileSync).toBeCalledWith(
             output,
-            generateOutput(packageOne, packageFour, packageTwo, packageThree),
+            generateOutput(packageOne, packageFour, packageInvalid2, packageTwo, packageThree),
         );
         expect(consoleLog).toBeCalledWith("Found 1 folder...");
         expect(consoleLog).toBeCalledWith(`- ${replaceBackslashes(path.resolve(__dirname, "node_modules"))}`);
-        expect(consoleLog).toBeCalledWith("Found 5 packages. Start processing...");
+        expect(consoleLog).toBeCalledWith("Found 6 packages. Start processing...");
         expect(consoleLog).toBeCalledWith(chalk.green(`Finished. Results were written to "${chalk.bold(output)}"`));
         expect(consoleLog).toBeCalledTimes(4);
         expect(consoleWarn).toBeCalledWith(chalk.yellow("Could not find a configuration file!"));
-        expect(consoleWarn).toBeCalledTimes(1);
+        expect(consoleWarn).toBeCalledWith(
+            chalk.yellow(
+                `No "${chalk.bold("url")}" was found for the package "${chalk.bold(
+                    "invalid2",
+                )}". You can add "overrides" to the reporter configuration to manually complete the information of a package.`,
+            ),
+        );
+        expect(consoleWarn).toBeCalledWith(
+            chalk.yellow(
+                `No "${chalk.bold("licenseName")}" was found for the package "${chalk.bold(
+                    "invalid2",
+                )}". You can add "overrides" to the reporter configuration to manually complete the information of a package.`,
+            ),
+        );
+        expect(consoleWarn).toBeCalledWith(chalk.yellow("Could not find a configuration file!"));
+        expect(consoleWarn).toBeCalledTimes(3);
         expect(consoleError).toBeCalledWith(
             `Could not extract license information from "${replaceBackslashes(
                 process.cwd(),

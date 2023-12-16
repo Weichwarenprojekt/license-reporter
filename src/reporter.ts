@@ -1,11 +1,11 @@
 import { OptionValues } from "commander";
 import { IPackageInfo, IReporterConfiguration, loadConfiguration, SearchMode } from "./configuration";
-import glob from "glob";
 import path from "path";
 import fs from "fs";
 import { replaceBackslashes } from "./util";
 import chalk from "chalk";
 import { EOL } from "os";
+import { globSync } from "glob";
 
 /**
  * Analyzes the node modules and generates a report
@@ -33,7 +33,7 @@ function findPackages(config: IReporterConfiguration): string[] {
     // Search for packageJsons in all the folders
     let packages: string[] = [];
     for (const folder of packageFolders) {
-        packages.push(...glob.sync(`${folder}/**/package.json`));
+        packages.push(...globSync(`${folder}/**/package.json`));
     }
 
     return preparePackages(config, packages);
@@ -48,7 +48,7 @@ function findPackageFolders(config: IReporterConfiguration): string[] {
     let globPath = config.search === SearchMode.recursive ? path.resolve(config.root, "**/") : config.root;
     globPath = path.resolve(globPath, "node_modules");
     globPath = replaceBackslashes(globPath);
-    let packageFolders = glob.sync(globPath, { ignore: "**/node_modules/**/node_modules/**" });
+    let packageFolders = globSync(globPath, { ignore: "**/node_modules/**/node_modules/**" });
     packageFolders = packageFolders.filter((directory) => {
         for (const ignorePath of config.ignore) if (directory.includes(ignorePath)) return false;
         return true;
@@ -138,8 +138,8 @@ function extractPackageInformation(config: IReporterConfiguration, packagePath: 
 
     // Search for a license
     const options = { nocase: true, cwd: packageDirectory };
-    let licenseFiles = glob.sync("licens*", options);
-    if (licenseFiles.length === 0) licenseFiles = glob.sync("copyin*", options);
+    let licenseFiles = globSync("licens*", options);
+    if (licenseFiles.length === 0) licenseFiles = globSync("copyin*", options);
     const licensePath = licenseFiles[0];
     if (licensePath) packageInfo.licenseText = fs.readFileSync(path.resolve(packageDirectory, licensePath), "utf-8");
     if (!packageInfo.licenseText) packageInfo.licenseText = config.defaultLicenseText;

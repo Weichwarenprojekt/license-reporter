@@ -1,11 +1,11 @@
 import { OptionValues } from "commander";
 import { IPackageInfo, IReporterConfiguration, loadConfiguration, SearchMode } from "./configuration";
-import glob from "glob";
 import path from "path";
 import fs from "fs";
 import { replaceBackslashes } from "./util";
 import chalk from "chalk";
 import { EOL } from "os";
+import { globSync } from "glob";
 
 /**
  * Analyzes the node modules and generates a report
@@ -33,7 +33,7 @@ function findPackages(config: IReporterConfiguration): string[] {
     // Search for packageJsons in all the folders
     let packages: string[] = [];
     for (const folder of packageFolders) {
-        packages.push(...glob.sync(`${folder}/**/package.json`));
+        packages.push(...globSync(`${folder}/**/package.json`));
     }
 
     return preparePackages(config, packages);
@@ -48,7 +48,7 @@ function findPackageFolders(config: IReporterConfiguration): string[] {
     let globPath = config.search === SearchMode.recursive ? path.resolve(config.root, "**/") : config.root;
     globPath = path.resolve(globPath, "node_modules");
     globPath = replaceBackslashes(globPath);
-    let packageFolders = glob.sync(globPath, { ignore: "**/node_modules/**/node_modules/**" });
+    let packageFolders = globSync(globPath, { ignore: "**/node_modules/**/node_modules/**" });
     packageFolders = packageFolders.filter((directory) => {
         for (const ignorePath of config.ignore) if (directory.includes(ignorePath)) return false;
         return true;
@@ -76,10 +76,7 @@ function preparePackages(config: IReporterConfiguration, allPackages: string[]):
     // Sort out nested package.jsons if parent directory already contains a package.json
     let currentDirectory = packages.length > 0 ? `${path.dirname(packages[0])}/` : "";
     for (let i = 1; i < packages.length; ) {
-        if (i > 1 && packages[i - 2].includes(currentDirectory)) {
-            packages.splice(i - 2, 1);
-            i--;
-        } else if (packages[i].includes(currentDirectory)) {
+        if (packages[i].includes(currentDirectory)) {
             packages.splice(i, 1);
         } else {
             currentDirectory = `${path.dirname(packages[i])}/`;
@@ -120,26 +117,32 @@ function extractInformation(config: IReporterConfiguration, packages: string[]):
  */
 function extractPackageInformation(config: IReporterConfiguration, packagePath: string): IPackageInfo {
     // Parse the package json
-    const packageJson = JSON.parse(fs.readFileSync(packagePath, "utf-8"));
+    const packageJson: {
+        name?: unknown;
+        homepage?: unknown;
+        license?: unknown;
+        repository?: string | { url: string };
+    } = JSON.parse(fs.readFileSync(packagePath, "utf-8"));
+
     // Make sure to convert backslashes to forward slashes as glob only works with forward slashes
     const packageDirectory = replaceBackslashes(path.dirname(packagePath));
     const packageInfo: IPackageInfo = {
-        name: packageJson.name,
-        url: packageJson.homepage,
-        licenseName: packageJson.license ?? "",
+        name: typeof packageJson.name === "string" ? packageJson.name : "",
+        url: typeof packageJson.homepage === "string" ? packageJson.homepage : "",
+        licenseName: typeof packageJson.license === "string" ? packageJson.license : "",
         licenseText: "",
     };
     if (!packageInfo.name) packageInfo.name = path.basename(packageDirectory);
-    packageInfo.url ??=
+    const url: string | unknown | undefined =
         typeof packageJson.repository === "string" ? packageJson.repository : packageJson.repository?.url;
-    packageInfo.url ??= "";
+    if (typeof url === "string" && !packageInfo.url) packageInfo.url = url;
     packageInfo.url = packageInfo.url.replace(/^git\+/, "");
     packageInfo.url = packageInfo.url.replace(/^git:\/\//, "https://");
 
     // Search for a license
     const options = { nocase: true, cwd: packageDirectory };
-    let licenseFiles = glob.sync("licens*", options);
-    if (licenseFiles.length === 0) licenseFiles = glob.sync("copyin*", options);
+    let licenseFiles = globSync("licens*", options);
+    if (licenseFiles.length === 0) licenseFiles = globSync("copyin*", options);
     const licensePath = licenseFiles[0];
     if (licensePath) packageInfo.licenseText = fs.readFileSync(path.resolve(packageDirectory, licensePath), "utf-8");
     if (!packageInfo.licenseText) packageInfo.licenseText = config.defaultLicenseText;

@@ -6,6 +6,7 @@ export const configuration: Partial<IReporterConfiguration> = {
             name: "incomplete-package",
             licenseName: "MIT",
             licenseText: "LICENSE for incomplete-package",
+            version: "1.0.0"
         },
     ],
 };

@@ -83,7 +83,8 @@ following:
         "name": "new-package",
         "url": "https://new-package.de",
         "licenseName": "MIT",
-        "licenseText": "LICENSE text for new-package"
+        "licenseText": "LICENSE text for new-package",
+        "version": "1.0.0"
     }
 ]
 ```

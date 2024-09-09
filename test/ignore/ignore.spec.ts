@@ -15,24 +15,28 @@ const packageOne: IPackageInfo = {
     url: "https://first.de",
     licenseName: "FIRST",
     licenseText: "LICENSE for first",
+    version: "1.0.0"
 };
 const packageTwo: IPackageInfo = {
     name: "second",
     url: "https://second.de",
     licenseName: "SECOND",
     licenseText: "LICENSE for second",
+    version: "2.0.0"
 };
 const packageThird: IPackageInfo = {
     name: "third",
     url: "https://third.de",
     licenseName: "THIRD",
     licenseText: "LICENSE for third",
+    version: "3.0.0"
 };
 const packageFourth: IPackageInfo = {
     name: "fourth",
     url: "https://fourth.de",
     licenseName: "FOURTH",
     licenseText: "LICENSE for fourth",
+    version: "4.0.0"
 };
 
 describe('Parameter "--ignore"', () => {

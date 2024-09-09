@@ -18,12 +18,14 @@ const incompletePackage: IPackageInfo = {
     url: "https://incomplete-package.de",
     licenseName: "",
     licenseText: "No license text found.",
+    version: ""
 };
 const completePackage: IPackageInfo = {
     name: "incomplete-package",
     url: "https://incomplete-package.de",
     licenseName: "MIT",
     licenseText: "LICENSE for incomplete-package",
+    version: "1.0.0"
 };
 
 describe('Parameter "--force"', () => {

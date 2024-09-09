@@ -34,6 +34,7 @@ describe('Parameter "--defaultLicenseText"', () => {
                 url: "https://incomplete.de",
                 licenseName: "MIT",
                 licenseText: "",
+                version: "1.0.0"
             }),
         );
     });
@@ -49,6 +50,7 @@ describe('Parameter "--defaultLicenseText"', () => {
                 url: "https://incomplete.de",
                 licenseName: "MIT",
                 licenseText: "No license text found.",
+                version: "1.0.0"
             }),
         );
     });
@@ -64,6 +66,7 @@ describe('Parameter "--defaultLicenseText"', () => {
                 url: "https://incomplete.de",
                 licenseName: "MIT",
                 licenseText: "Default license text from cli.",
+                version: "1.0.0"
             }),
         );
     });
@@ -78,6 +81,7 @@ describe('Parameter "--defaultLicenseText"', () => {
                 url: "https://incomplete.de",
                 licenseName: "MIT",
                 licenseText: "Default license text from config.",
+                version: "1.0.0"
             }),
         );
     });

@@ -20,30 +20,35 @@ const packageOne: IPackageInfo = {
     url: "https://first.de",
     licenseName: "FIRST",
     licenseText: "LICENSE for first",
+    version: "1.0.0"
 };
 const packageTwo: IPackageInfo = {
     name: "second",
     url: "https://second.de",
     licenseName: "SECOND",
     licenseText: "LICENSE for second",
+    version: "2.0.0"
 };
 const packageThree: IPackageInfo = {
     name: "third",
     url: "https://third.de",
     licenseName: "THIRD",
     licenseText: "LICENSE for third",
+    version: "3.0.0"
 };
 const packageFour: IPackageInfo = {
     name: "fourth",
     url: "https://fourth.de",
     licenseName: "FOURTH",
     licenseText: "LICENSE for fourth",
+    version: "4.0.0"
 };
 const packageInvalid2: IPackageInfo = {
     name: "invalid2",
     url: "",
     licenseName: "",
     licenseText: "No license text found.",
+    version: ""
 };
 
 describe("General CLI", () => {
@@ -53,7 +58,7 @@ describe("General CLI", () => {
 
     it("ignores invalid data", async () => {
         try {
-            await executeCli("--root", __dirname);
+            await executeCli("--root", __dirname, "--search", "flat");
         } catch (e) {
             expect(e).toBeInstanceOf(Error);
         }
@@ -83,8 +88,15 @@ describe("General CLI", () => {
                 )}". You can add "overrides" to the reporter configuration to manually complete the information of a package.`,
             ),
         );
+        expect(consoleWarn).toBeCalledWith(
+            chalk.yellow(
+                `No "${chalk.bold("version")}" was found for the package "${chalk.bold(
+                    "invalid2",
+                )}". You can add "overrides" to the reporter configuration to manually complete the information of a package.`,
+            ),
+        );
         expect(consoleWarn).toBeCalledWith(chalk.yellow("Could not find a configuration file!"));
-        expect(consoleWarn).toBeCalledTimes(3);
+        expect(consoleWarn).toBeCalledTimes(4);
         expect(consoleError).toBeCalledWith(
             `Could not extract license information from "${replaceBackslashes(
                 process.cwd(),

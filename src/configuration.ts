@@ -26,6 +26,8 @@ export interface IPackageInfo {
     licenseName: string;
     /** The license text */
     licenseText: string;
+    /** The package version */
+    version: string;
 }
 
 /**

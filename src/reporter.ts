@@ -33,8 +33,14 @@ function findPackages(config: IReporterConfiguration): string[] {
     // Search for packageJsons in all the folders
     let packages: string[] = [];
     for (const folder of packageFolders) {
-        packages.push(...globSync(`${folder}/**/package.json`));
+        if (config.search === SearchMode.recursive) {
+            packages.push(...globSync(`${folder}/**/package.json`))
+         } else {
+            packages.push(...globSync(`${folder}/*/package.json`))
+         }
     }
+
+    packages = packages.map((pkg) => replaceBackslashes(pkg))
 
     return preparePackages(config, packages);
 }
@@ -52,7 +58,10 @@ function findPackageFolders(config: IReporterConfiguration): string[] {
     packageFolders = packageFolders.filter((directory) => {
         for (const ignorePath of config.ignore) if (directory.includes(ignorePath)) return false;
         return true;
-    });
+    }).map((directory) => {
+        return replaceBackslashes(directory)
+    })
+
     packageFolders.push(...config.addFolder);
 
     // Inform the user
@@ -122,6 +131,7 @@ function extractPackageInformation(config: IReporterConfiguration, packagePath: 
         homepage?: unknown;
         license?: unknown;
         repository?: string | { url: string };
+        version?: unknown;
     } = JSON.parse(fs.readFileSync(packagePath, "utf-8"));
 
     // Make sure to convert backslashes to forward slashes as glob only works with forward slashes
@@ -131,6 +141,7 @@ function extractPackageInformation(config: IReporterConfiguration, packagePath: 
         url: typeof packageJson.homepage === "string" ? packageJson.homepage : "",
         licenseName: typeof packageJson.license === "string" ? packageJson.license : "",
         licenseText: "",
+        version: typeof packageJson.version === "string" ? packageJson.version : "",
     };
     if (!packageInfo.name) packageInfo.name = path.basename(packageDirectory);
     const url: string | unknown | undefined =
@@ -168,6 +179,7 @@ function prepareInformation(config: IReporterConfiguration, rawInfo: Map<string,
                 url: override.url ?? "",
                 licenseName: override.licenseName ?? "",
                 licenseText: override.licenseText ?? "",
+                version: override.version ?? "",
             });
         }
     }
@@ -199,6 +211,7 @@ function validateInformation(config: IReporterConfiguration, infos: IPackageInfo
         if (!info.url && !config.ignoreMissingUrl) handleIncompleteInfo("url", info.name);
         if (!info.licenseName) handleIncompleteInfo("licenseName", info.name);
         if (!info.licenseText) handleIncompleteInfo("licenseText", info.name);
+        if (!info.version) handleIncompleteInfo("version", info.name);
     }
     return isInfoComplete;
 }

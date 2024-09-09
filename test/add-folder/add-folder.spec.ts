@@ -16,6 +16,7 @@ const packageOne: IPackageInfo = {
     url: "https://packageOne.de",
     licenseName: "MIT1",
     licenseText: "LICENSE for packageOne",
+    version: "1.0.0"
 };
 
 describe('Parameter "--addFolder"', () => {
@@ -60,6 +61,7 @@ describe('Parameter "--addFolder"', () => {
                 url: "https://packageTwo.de",
                 licenseName: "MIT2",
                 licenseText: "LICENSE for packageTwo",
+                version: "2.0.0"
             }),
         );
     });

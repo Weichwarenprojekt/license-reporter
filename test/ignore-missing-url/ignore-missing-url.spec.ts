@@ -17,6 +17,7 @@ const packageInfo = {
     url: "",
     licenseName: "MIT",
     licenseText: "LICENSE text for incomplete package.",
+    version: "1.0.0"
 };
 
 describe('Parameter "--ignoreMissingUrl"', () => {

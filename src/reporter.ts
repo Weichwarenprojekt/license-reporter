@@ -33,13 +33,8 @@ function findPackages(config: IReporterConfiguration): string[] {
     // Search for packageJsons in all the folders
     let packages: string[] = [];
     for (const folder of packageFolders) {
-        if (config.search === SearchMode.recursive) {
-            packages.push(...globSync(`${folder}/**/package.json`));
-        } else {
-            packages.push(...globSync(`${folder}/*/package.json`));
-        }
+        packages.push(...globSync(`${folder}/**/package.json`));
     }
-
     packages = packages.map((pkg) => replaceBackslashes(pkg));
 
     return preparePackages(config, packages);
@@ -60,9 +55,7 @@ function findPackageFolders(config: IReporterConfiguration): string[] {
             for (const ignorePath of config.ignore) if (directory.includes(ignorePath)) return false;
             return true;
         })
-        .map((directory) => {
-            return replaceBackslashes(directory);
-        });
+        .map(replaceBackslashes);
 
     packageFolders.push(...config.addFolder);
 
@@ -84,7 +77,7 @@ function preparePackages(config: IReporterConfiguration, allPackages: string[]):
         return true;
     });
 
-    // Sort out nested package.jsons if parent directory already contains a package.json
+    // Sort out nested package.jsons if the parent directory already contains a package.json
     let currentDirectory = packages.length > 0 ? `${path.dirname(packages[0])}/` : "";
     for (let i = 1; i < packages.length; ) {
         if (packages[i].includes(currentDirectory)) {
@@ -127,7 +120,7 @@ function extractInformation(config: IReporterConfiguration, packages: string[]):
  * @param packagePath The path to the package
  */
 function extractPackageInformation(config: IReporterConfiguration, packagePath: string): IPackageInfo {
-    // Parse the package json
+    // Parse the package.json
     const packageJson: {
         name?: unknown;
         homepage?: unknown;
@@ -136,7 +129,7 @@ function extractPackageInformation(config: IReporterConfiguration, packagePath: 
         version?: unknown;
     } = JSON.parse(fs.readFileSync(packagePath, "utf-8"));
 
-    // Make sure to convert backslashes to forward slashes as glob only works with forward slashes
+    // Make sure to convert backslashes to forward slashes as a glob only works with forward slashes
     const packageDirectory = replaceBackslashes(path.dirname(packagePath));
     const packageInfo: IPackageInfo = {
         name: typeof packageJson.name === "string" ? packageJson.name : "",

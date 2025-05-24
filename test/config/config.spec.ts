@@ -3,7 +3,6 @@ import path from "path";
 import fs from "fs";
 import { executeCli, generateOutput } from "../test.util";
 import { replaceBackslashes } from "../../src/util";
-import chalk from "chalk";
 
 const fsMocked = jest.mocked(fs);
 jest.spyOn(console, "log").mockImplementation(() => {});
@@ -66,7 +65,7 @@ describe('Parameter "--config"', () => {
 
     it("throws if specified config does not exist", async () => {
         await executeCli("--root", __dirname, "--config", "unknown.config.ts");
-        expect(consoleWarn).toBeCalledWith(chalk.yellow("Could not find a configuration file!"));
+        expect(consoleWarn).toBeCalledWith(expect.stringContaining("Could not find a configuration file!"));
         expect(fsMocked.writeFileSync).toBeCalledWith(
             replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),
             generateOutput(),

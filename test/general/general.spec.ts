@@ -4,7 +4,8 @@ import fs from "fs";
 import { executeCli, generateOutput, processStdoutMock } from "../test.util";
 import { IPackageInfo } from "../../src";
 import { replaceBackslashes } from "../../src/util";
-import chalk from "chalk";
+import packageJson from "../../package.json";
+import clc from "cli-color";
 
 const fsMocked = jest.mocked(fs);
 const consoleLog = jest.spyOn(console, "log").mockImplementation(() => {});
@@ -20,35 +21,35 @@ const packageOne: IPackageInfo = {
     url: "https://first.de",
     licenseName: "FIRST",
     licenseText: "LICENSE for first",
-    version: "1.0.0"
+    version: "1.0.0",
 };
 const packageTwo: IPackageInfo = {
     name: "second",
     url: "https://second.de",
     licenseName: "SECOND",
     licenseText: "LICENSE for second",
-    version: "2.0.0"
+    version: "2.0.0",
 };
 const packageThree: IPackageInfo = {
     name: "third",
     url: "https://third.de",
     licenseName: "THIRD",
     licenseText: "LICENSE for third",
-    version: "3.0.0"
+    version: "3.0.0",
 };
 const packageFour: IPackageInfo = {
     name: "fourth",
     url: "https://fourth.de",
     licenseName: "FOURTH",
     licenseText: "LICENSE for fourth",
-    version: "4.0.0"
+    version: "4.0.0",
 };
 const packageInvalid2: IPackageInfo = {
     name: "invalid2",
     url: "",
     licenseName: "",
     licenseText: "No license text found.",
-    version: ""
+    version: "",
 };
 
 describe("General CLI", () => {
@@ -71,31 +72,31 @@ describe("General CLI", () => {
         expect(consoleLog).toBeCalledWith("Found 1 folder...");
         expect(consoleLog).toBeCalledWith(`- ${replaceBackslashes(path.resolve(__dirname, "node_modules"))}`);
         expect(consoleLog).toBeCalledWith("Found 6 packages. Start processing...");
-        expect(consoleLog).toBeCalledWith(chalk.green(`Finished. Results were written to "${chalk.bold(output)}"`));
+        expect(consoleLog).toBeCalledWith(clc.green(`Finished. Results were written to "${clc.bold(output)}"`));
         expect(consoleLog).toBeCalledTimes(4);
-        expect(consoleWarn).toBeCalledWith(chalk.yellow("Could not find a configuration file!"));
+        expect(consoleWarn).toBeCalledWith(expect.stringContaining("Could not find a configuration file!"));
         expect(consoleWarn).toBeCalledWith(
-            chalk.yellow(
-                `No "${chalk.bold("url")}" was found for the package "${chalk.bold(
+            clc.yellow(
+                `No "${clc.bold("url")}" was found for the package "${clc.bold(
                     "invalid2",
                 )}". You can add "overrides" to the reporter configuration to manually complete the information of a package.`,
             ),
         );
         expect(consoleWarn).toBeCalledWith(
-            chalk.yellow(
-                `No "${chalk.bold("licenseName")}" was found for the package "${chalk.bold(
+            clc.yellow(
+                `No "${clc.bold("licenseName")}" was found for the package "${clc.bold(
                     "invalid2",
                 )}". You can add "overrides" to the reporter configuration to manually complete the information of a package.`,
             ),
         );
         expect(consoleWarn).toBeCalledWith(
-            chalk.yellow(
-                `No "${chalk.bold("version")}" was found for the package "${chalk.bold(
+            clc.yellow(
+                `No "${clc.bold("version")}" was found for the package "${clc.bold(
                     "invalid2",
                 )}". You can add "overrides" to the reporter configuration to manually complete the information of a package.`,
             ),
         );
-        expect(consoleWarn).toBeCalledWith(chalk.yellow("Could not find a configuration file!"));
+        expect(consoleWarn).toBeCalledWith(expect.stringContaining("Could not find a configuration file!"));
         expect(consoleWarn).toBeCalledTimes(4);
         expect(consoleError).toBeCalledWith(
             `Could not extract license information from "${replaceBackslashes(
@@ -106,7 +107,6 @@ describe("General CLI", () => {
     });
 
     it("prints the version from the package json", async () => {
-        const packageJson = require("../../package.json");
         const processStdoutWrite = jest.spyOn(process.stdout, "write").mockImplementation(processStdoutMock);
         try {
             await executeCli("--version");

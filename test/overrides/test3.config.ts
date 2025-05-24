@@ -1,4 +1,4 @@
-import { IReporterConfiguration } from "../../src/configuration";
+import { IReporterConfiguration } from "../../src";
 
 export const configuration: Partial<IReporterConfiguration> = {
     overrides: [
@@ -10,14 +10,14 @@ export const configuration: Partial<IReporterConfiguration> = {
             name: "incomplete-package",
             licenseName: "MIT",
             licenseText: "LICENSE for incomplete-package",
-            version: "1.0.0"
+            version: "1.0.0",
         },
         {
             name: "another-package",
             url: "https://another-package.de",
             licenseName: "ANOTHER",
             licenseText: "LICENSE for another-package",
-            version: "1.0.0"
+            version: "1.0.0",
         },
     ],
 };

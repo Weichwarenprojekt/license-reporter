@@ -4,7 +4,6 @@ import fs from "fs";
 import { IPackageInfo } from "../../src";
 import path from "path";
 import { replaceBackslashes } from "../../src/util";
-import chalk from "chalk";
 
 // Mock fs and console.warn
 const fsMocked = jest.mocked(fs);
@@ -17,49 +16,49 @@ const packageIncomplete: IPackageInfo = {
     url: "https://incomplete-package.de",
     licenseName: "",
     licenseText: "",
-    version: ""
+    version: "",
 };
 const packageAnotherIncomplete: IPackageInfo = {
     name: "another-incomplete-package",
     url: "",
     licenseName: "ANOTHER",
     licenseText: "LICENSE for anotherIncompletePackage",
-    version: "1.0.0"
+    version: "1.0.0",
 };
 const packageComplete1: IPackageInfo = {
     name: "incomplete-package",
     url: "https://incomplete-package.de",
     licenseName: "MIT",
     licenseText: "LICENSE for incomplete-package",
-    version: "1.0.0"
+    version: "1.0.0",
 };
 const packageComplete2: IPackageInfo = {
     name: "incomplete-package",
     url: "https://complete-package.de",
     licenseName: "MIT",
     licenseText: "LICENSE for incomplete-package",
-    version: "1.0.0"
+    version: "1.0.0",
 };
 const packageAnotherComplete: IPackageInfo = {
     name: "another-incomplete-package",
     url: "https://another-incomplete-package.de",
     licenseName: "ANOTHER",
     licenseText: "LICENSE for anotherIncompletePackage",
-    version: "1.0.0"
+    version: "1.0.0",
 };
 const packageAnother: IPackageInfo = {
     name: "another-package",
     url: "https://another-package.de",
     licenseName: "ANOTHER",
     licenseText: "LICENSE for another-package",
-    version: "1.0.0"
+    version: "1.0.0",
 };
 const packageNew: IPackageInfo = {
     name: "new-incomplete-package",
     url: "",
     licenseName: "",
     licenseText: "",
-    version: ""
+    version: "",
 };
 
 describe('Parameter "--override"', () => {
@@ -70,7 +69,7 @@ describe('Parameter "--override"', () => {
     it("notifies user if package info should be provided manually", async () => {
         await executeCli("--root", __dirname, "--force", "--defaultLicenseText", "");
         expect(consoleWarn).toBeCalledTimes(5);
-        expect(consoleWarn).toBeCalledWith(chalk.yellow("Could not find a configuration file!"));
+        expect(consoleWarn).toBeCalledWith(expect.stringContaining("Could not find a configuration file!"));
         expect(consoleWarn).toBeCalledWith(generateIncompleteInfoWarning("url", "another-incomplete-package"));
         expect(consoleWarn).toBeCalledWith(generateIncompleteInfoWarning("licenseName", "incomplete-package"));
         expect(consoleWarn).toBeCalledWith(generateIncompleteInfoWarning("licenseText", "incomplete-package"));

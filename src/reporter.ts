@@ -3,7 +3,7 @@ import { IPackageInfo, IReporterConfiguration, loadConfiguration, SearchMode } f
 import path from "path";
 import fs from "fs";
 import { replaceBackslashes } from "./util";
-import chalk from "chalk";
+import clc from "cli-color";
 import { EOL } from "os";
 import { globSync } from "glob";
 
@@ -34,13 +34,13 @@ function findPackages(config: IReporterConfiguration): string[] {
     let packages: string[] = [];
     for (const folder of packageFolders) {
         if (config.search === SearchMode.recursive) {
-            packages.push(...globSync(`${folder}/**/package.json`))
-         } else {
-            packages.push(...globSync(`${folder}/*/package.json`))
-         }
+            packages.push(...globSync(`${folder}/**/package.json`));
+        } else {
+            packages.push(...globSync(`${folder}/*/package.json`));
+        }
     }
 
-    packages = packages.map((pkg) => replaceBackslashes(pkg))
+    packages = packages.map((pkg) => replaceBackslashes(pkg));
 
     return preparePackages(config, packages);
 }
@@ -55,12 +55,14 @@ function findPackageFolders(config: IReporterConfiguration): string[] {
     globPath = path.resolve(globPath, "node_modules");
     globPath = replaceBackslashes(globPath);
     let packageFolders = globSync(globPath, { ignore: "**/node_modules/**/node_modules/**" });
-    packageFolders = packageFolders.filter((directory) => {
-        for (const ignorePath of config.ignore) if (directory.includes(ignorePath)) return false;
-        return true;
-    }).map((directory) => {
-        return replaceBackslashes(directory)
-    })
+    packageFolders = packageFolders
+        .filter((directory) => {
+            for (const ignorePath of config.ignore) if (directory.includes(ignorePath)) return false;
+            return true;
+        })
+        .map((directory) => {
+            return replaceBackslashes(directory);
+        });
 
     packageFolders.push(...config.addFolder);
 
@@ -200,8 +202,8 @@ function validateInformation(config: IReporterConfiguration, infos: IPackageInfo
     const handleIncompleteInfo = (missingField: string, packageName: string): void => {
         isInfoComplete = false;
         console.warn(
-            chalk.yellow(
-                `No "${chalk.bold(missingField)}" was found for the package "${chalk.bold(
+            clc.yellow(
+                `No "${clc.bold(missingField)}" was found for the package "${clc.bold(
                     packageName,
                 )}". You can add "overrides" to the reporter configuration to manually complete the information of a package.`,
             ),
@@ -224,5 +226,5 @@ function validateInformation(config: IReporterConfiguration, infos: IPackageInfo
 function exportInformation(config: IReporterConfiguration, infos: IPackageInfo[]): void {
     fs.mkdirSync(path.dirname(config.output), { recursive: true });
     fs.writeFileSync(config.output, `${JSON.stringify(infos, null, 4)}${EOL}`);
-    console.log(chalk.green(`Finished. Results were written to "${chalk.bold(config.output)}"`));
+    console.log(clc.green(`Finished. Results were written to "${clc.bold(config.output)}"`));
 }

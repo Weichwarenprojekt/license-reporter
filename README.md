@@ -57,17 +57,17 @@ export const configuration: Partial<IReporterConfiguration> = {
 
 For CommonJS modules you would use **module.exports.configuration** instead of **export const configuration**
 
-| Config             | Description                                                                                                                    |
-|--------------------|--------------------------------------------------------------------------------------------------------------------------------|
-| addFolder          | Adds a folder that contain packages. Useful if libraries are in a folder that isn't named "node_modules".                      |
-| defaultLicenseText | The default license text that is used if the tool can't find a license text for a package.                                     |
-| force              | If true, license-reporter will ignore missing dependencies and exit with 0 anyways.                                            |
-| ignore             | Ignores the given paths when searching for packages.                                                                           |
-| ignoreMissingUrl   | If true, license-reporter will not fail and warn you because of missing urls.                                                  |
-| output             | The path of the output file.                                                                                                   |
-| overrides          | A list of packages that can be used to complete missing information or to add new packages to the output list.                 |
-| root               | The path to the root directory.                                                                                                |
-| search             | The search mode. Can be "flat" or "search". When set to "flat", license-reporter will only analyze the top-level node_modules. |
+| Config             | Description                                                                                                                                                                                                                                                                     |
+|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| addFolder          | Adds a folder that contain packages. Useful if libraries are in a folder that isn't named "node_modules".                                                                                                                                                                       |
+| defaultLicenseText | The default license text that is used if the tool can't find a license text for a package. (default: "No license text found.")                                                                                                                                                  |
+| force              | If true, license-reporter will ignore missing dependencies and exit with 0 anyways. (default: false)                                                                                                                                                                            |
+| ignore             | Ignores the given paths when searching for packages.                                                                                                                                                                                                                            |
+| ignoreMissingUrl   | If true, license-reporter will not fail and warn you because of missing urls. (default: false)                                                                                                                                                                                  |
+| output             | The path of the output file. (default: "./3rdpartylicenses.json")                                                                                                                                                                                                               |
+| overrides          | A list of packages that can be used to complete missing information or to add new packages to the output list.                                                                                                                                                                  |
+| root               | The path to the root directory. (default: process.cwd())                                                                                                                                                                                                                        |
+| search             | The search mode for node_modules directories. Can be SearchMode.flat (only analyze the top-level node_modules relative to root) or SearchMode.recursive (also search in subdirectories for node_modules, e.g., in monorepo workspace packages). (default: SearchMode.recursive) |
 
 Every option is also available using the cli directly, but license-reporter will always take options set in the
 configuration over options given as CLI arguments.

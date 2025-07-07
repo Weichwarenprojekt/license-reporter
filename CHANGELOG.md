@@ -1,3 +1,6 @@
+# 1.1.0 (2025-07-07)
+## Features
+- add version field (a64063ca)
 # 1.0.0 (2023-12-21)
 ## Features
 - improve validation of package information - #1 (72b115d)

@@ -1,14 +1,8 @@
 import { Command } from "commander";
 import { reportLicenses } from "./reporter";
-import { defaultConfiguration } from "./configuration";
+import { getDefaultConfiguration } from "./configuration";
+import packageJson from "../package.json";
 
-const name =
-    " __        ______    _     _                           ____                       _\n" +
-    " \\ \\      / /  _ \\  | |   (_) ___ ___ _ __  ___  ___  |  _ \\ ___ _ __   ___  _ __| |_ ___ _ __\n" +
-    "  \\ \\ /\\ / /| |_) | | |   | |/ __/ _ \\ '_ \\/ __|/ _ \\ | |_) / _ \\ '_ \\ / _ \\| '__| __/ _ \\ '__|\n" +
-    "   \\ V  V / |  __/  | |___| | (_|  __/ | | \\__ \\  __/ |  _ <  __/ |_) | (_) | |  | ||  __/ |\n" +
-    "    \\_/\\_/  |_|     |_____|_|\\___\\___|_| |_|___/\\___| |_| \\_\\___| .__/ \\___/|_|   \\__\\___|_|\n" +
-    "                                                                |_|";
 const program = new Command();
 
 /**
@@ -16,10 +10,10 @@ const program = new Command();
  * @param args The arguments for the cli
  */
 export async function cli(args: string[]): Promise<void> {
-    const packageJson = require("../package.json");
+    const defaultConfiguration = getDefaultConfiguration();
     await program
         .version(packageJson.version)
-        .description(`${name}\n${packageJson.description}`)
+        .description(packageJson.description)
         .action(reportLicenses)
         .option("--config <value>", "The path to the configuration file.", defaultConfiguration.config)
         .option(

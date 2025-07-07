@@ -3,7 +3,6 @@ import path from "path";
 import fs from "fs";
 import { executeCli, generateIncompleteInfoWarning, generateOutput } from "../test.util";
 import { replaceBackslashes } from "../../src/util";
-import chalk from "chalk";
 
 const fsMocked = jest.mocked(fs);
 jest.spyOn(console, "log").mockImplementation(() => {});
@@ -17,6 +16,7 @@ const packageInfo = {
     url: "",
     licenseName: "MIT",
     licenseText: "LICENSE text for incomplete package.",
+    version: "1.0.0",
 };
 
 describe('Parameter "--ignoreMissingUrl"', () => {
@@ -31,7 +31,7 @@ describe('Parameter "--ignoreMissingUrl"', () => {
             expect(e).toBeInstanceOf(Error);
         }
         expect(processExit).toBeCalledWith(1);
-        expect(consoleWarn).toBeCalledWith(chalk.yellow("Could not find a configuration file!"));
+        expect(consoleWarn).toBeCalledWith(expect.stringContaining("Could not find a configuration file!"));
         expect(consoleWarn).toBeCalledWith(generateIncompleteInfoWarning("url", "incomplete"));
         expect(consoleWarn).toBeCalledTimes(2);
         expect(fsMocked.writeFileSync).toBeCalledWith(
@@ -42,7 +42,7 @@ describe('Parameter "--ignoreMissingUrl"', () => {
 
     it("ignores missing urls (cli)", async () => {
         await executeCli("--root", __dirname, "--ignoreMissingUrl");
-        expect(consoleWarn).toBeCalledWith(chalk.yellow("Could not find a configuration file!"));
+        expect(consoleWarn).toBeCalledWith(expect.stringContaining("Could not find a configuration file!"));
         expect(consoleWarn).toBeCalledTimes(1);
         expect(fsMocked.writeFileSync).toBeCalledWith(
             replaceBackslashes(path.resolve(__dirname, "3rdpartylicenses.json")),

@@ -2,7 +2,7 @@ import { OptionValues } from "commander";
 import path from "path";
 import { loadModule } from "@weichwarenprojekt/ts-importer";
 import { replaceBackslashes } from "./util";
-import chalk from "chalk";
+import clc from "cli-color";
 
 /**
  * The possible search modes
@@ -26,13 +26,15 @@ export interface IPackageInfo {
     licenseName: string;
     /** The license text */
     licenseText: string;
+    /** The package version */
+    version: string;
 }
 
 /**
  * The parameters that can be configured within the configuration file
  */
 export interface IReporterConfiguration {
-    /** Add a folder that contains packages. Useful if libraries are in a folder that isn't named "node_modules". */
+    /** Add a folder that contains packages. Useful if libraries are in a folder not named "node_modules". */
     addFolder: string[];
     /** The default license text that is used if the tool can't find a license text for a package */
     defaultLicenseText: string;
@@ -48,7 +50,7 @@ export interface IReporterConfiguration {
     overrides: Partial<IPackageInfo>[];
     /** The path to the root directory */
     root: string;
-    /** The search mode. Can be "flat" or "recursive" */
+    /** The search mode for `node_modules` directories. Can be "flat" or "recursive" */
     search: SearchMode;
 }
 
@@ -63,7 +65,7 @@ export interface IReporterCliConfiguration extends IReporterConfiguration {
 /**
  * The default configuration
  */
-export const defaultConfiguration: IReporterCliConfiguration = {
+export const getDefaultConfiguration = (): IReporterCliConfiguration => ({
     addFolder: [],
     config: `./license-reporter.config.ts`,
     defaultLicenseText: "No license text found.",
@@ -74,14 +76,14 @@ export const defaultConfiguration: IReporterCliConfiguration = {
     overrides: [],
     root: process.cwd(),
     search: SearchMode.recursive,
-};
+});
 
 /**
  * Loads the configuration file
  * @param options The configuration parameters that were collected by commander
  */
 export async function loadConfiguration(options: OptionValues): Promise<IReporterConfiguration> {
-    let cliConfig = Object.assign(defaultConfiguration, options);
+    let cliConfig = Object.assign(getDefaultConfiguration(), options);
     try {
         let configPath = cliConfig.config;
         if (!path.isAbsolute(configPath)) configPath = path.resolve(cliConfig.root, configPath);
@@ -89,22 +91,21 @@ export async function loadConfiguration(options: OptionValues): Promise<IReporte
         if (!configImport.configuration) console.warn('The specified configuration does not export a "configuration"');
         cliConfig = Object.assign(cliConfig, configImport.configuration);
     } catch (e) {
-        console.warn(chalk.yellow("Could not find a configuration file!"));
+        console.warn(clc.yellow(`Could not find a configuration file!\n\n${e}`));
     }
     return prepareConfiguration(cliConfig);
 }
 
 /**
  * Prepares the configuration
- * @param config
  */
 function prepareConfiguration(config: IReporterConfiguration): IReporterConfiguration {
-    // Ensure that the root & output path is absolute
+    // Ensure that the root and output path are absolute
     if (!path.isAbsolute(config.root)) config.root = path.resolve(process.cwd(), config.root);
     config.root = replaceBackslashes(config.root);
     if (!path.isAbsolute(config.output)) config.output = path.resolve(config.root, config.output);
     config.output = replaceBackslashes(config.output);
-    // Ensure that all ignore paths are absolute and that backslashes are replaced and that the path ends with a slash
+    // Ensure that all ignored paths are absolute and that backslashes are replaced and that the path ends with a slash
     config.ignore = config.ignore.map((folder) => {
         const ignorePath = replaceBackslashes(path.isAbsolute(folder) ? folder : path.resolve(config.root, folder));
         return ignorePath.endsWith("/") ? ignorePath : `${ignorePath}/`;

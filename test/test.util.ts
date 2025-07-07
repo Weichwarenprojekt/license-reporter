@@ -1,7 +1,7 @@
 import { IPackageInfo } from "../src";
 import { jest } from "@jest/globals";
-import chalk from "chalk";
 import { EOL } from "os";
+import clc from "cli-color";
 
 /**
  * An empty mock for process stdout
@@ -20,8 +20,9 @@ export async function executeCli(...args: string[]): Promise<void> {
     return new Promise((resolve, reject) => {
         jest.isolateModules(async () => {
             try {
+                // eslint-disable-next-line @typescript-eslint/no-require-imports
                 const cli = await require("../src/cli");
-                // First two arguments are required for commanders to parse the parameters properly
+                // The first two arguments are required for commander to parse the parameters properly
                 await cli.cli(["node", "whatever", ...args]);
                 resolve();
             } catch (e) {
@@ -45,8 +46,8 @@ export function generateOutput(...packages: IPackageInfo[]) {
  * @param packageName The name of the package
  */
 export function generateIncompleteInfoWarning(missingField: string, packageName: string): string {
-    return chalk.yellow(
-        `No "${chalk.bold(missingField)}" was found for the package "${chalk.bold(
+    return clc.yellow(
+        `No "${clc.bold(missingField)}" was found for the package "${clc.bold(
             packageName,
         )}". You can add "overrides" to the reporter configuration to manually complete the information of a package.`,
     );

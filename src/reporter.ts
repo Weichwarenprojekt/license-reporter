@@ -3,7 +3,7 @@ import { IPackageInfo, IReporterConfiguration, loadConfiguration, SearchMode } f
 import path from "path";
 import fs from "fs";
 import { replaceBackslashes } from "./util";
-import chalk from "chalk";
+import clc from "cli-color";
 import { EOL } from "os";
 import { globSync } from "glob";
 
@@ -35,6 +35,7 @@ function findPackages(config: IReporterConfiguration): string[] {
     for (const folder of packageFolders) {
         packages.push(...globSync(`${folder}/**/package.json`));
     }
+    packages = packages.map((pkg) => replaceBackslashes(pkg));
 
     return preparePackages(config, packages);
 }
@@ -49,10 +50,13 @@ function findPackageFolders(config: IReporterConfiguration): string[] {
     globPath = path.resolve(globPath, "node_modules");
     globPath = replaceBackslashes(globPath);
     let packageFolders = globSync(globPath, { ignore: "**/node_modules/**/node_modules/**" });
-    packageFolders = packageFolders.filter((directory) => {
-        for (const ignorePath of config.ignore) if (directory.includes(ignorePath)) return false;
-        return true;
-    });
+    packageFolders = packageFolders
+        .filter((directory) => {
+            for (const ignorePath of config.ignore) if (directory.includes(ignorePath)) return false;
+            return true;
+        })
+        .map(replaceBackslashes);
+
     packageFolders.push(...config.addFolder);
 
     // Inform the user
@@ -73,7 +77,7 @@ function preparePackages(config: IReporterConfiguration, allPackages: string[]):
         return true;
     });
 
-    // Sort out nested package.jsons if parent directory already contains a package.json
+    // Sort out nested package.jsons if the parent directory already contains a package.json
     let currentDirectory = packages.length > 0 ? `${path.dirname(packages[0])}/` : "";
     for (let i = 1; i < packages.length; ) {
         if (packages[i].includes(currentDirectory)) {
@@ -116,21 +120,23 @@ function extractInformation(config: IReporterConfiguration, packages: string[]):
  * @param packagePath The path to the package
  */
 function extractPackageInformation(config: IReporterConfiguration, packagePath: string): IPackageInfo {
-    // Parse the package json
+    // Parse the package.json
     const packageJson: {
         name?: unknown;
         homepage?: unknown;
         license?: unknown;
         repository?: string | { url: string };
+        version?: unknown;
     } = JSON.parse(fs.readFileSync(packagePath, "utf-8"));
 
-    // Make sure to convert backslashes to forward slashes as glob only works with forward slashes
+    // Make sure to convert backslashes to forward slashes as a glob only works with forward slashes
     const packageDirectory = replaceBackslashes(path.dirname(packagePath));
     const packageInfo: IPackageInfo = {
         name: typeof packageJson.name === "string" ? packageJson.name : "",
         url: typeof packageJson.homepage === "string" ? packageJson.homepage : "",
         licenseName: typeof packageJson.license === "string" ? packageJson.license : "",
         licenseText: "",
+        version: typeof packageJson.version === "string" ? packageJson.version : "",
     };
     if (!packageInfo.name) packageInfo.name = path.basename(packageDirectory);
     const url: string | unknown | undefined =
@@ -168,6 +174,7 @@ function prepareInformation(config: IReporterConfiguration, rawInfo: Map<string,
                 url: override.url ?? "",
                 licenseName: override.licenseName ?? "",
                 licenseText: override.licenseText ?? "",
+                version: override.version ?? "",
             });
         }
     }
@@ -188,8 +195,8 @@ function validateInformation(config: IReporterConfiguration, infos: IPackageInfo
     const handleIncompleteInfo = (missingField: string, packageName: string): void => {
         isInfoComplete = false;
         console.warn(
-            chalk.yellow(
-                `No "${chalk.bold(missingField)}" was found for the package "${chalk.bold(
+            clc.yellow(
+                `No "${clc.bold(missingField)}" was found for the package "${clc.bold(
                     packageName,
                 )}". You can add "overrides" to the reporter configuration to manually complete the information of a package.`,
             ),
@@ -199,6 +206,7 @@ function validateInformation(config: IReporterConfiguration, infos: IPackageInfo
         if (!info.url && !config.ignoreMissingUrl) handleIncompleteInfo("url", info.name);
         if (!info.licenseName) handleIncompleteInfo("licenseName", info.name);
         if (!info.licenseText) handleIncompleteInfo("licenseText", info.name);
+        if (!info.version) handleIncompleteInfo("version", info.name);
     }
     return isInfoComplete;
 }
@@ -211,5 +219,5 @@ function validateInformation(config: IReporterConfiguration, infos: IPackageInfo
 function exportInformation(config: IReporterConfiguration, infos: IPackageInfo[]): void {
     fs.mkdirSync(path.dirname(config.output), { recursive: true });
     fs.writeFileSync(config.output, `${JSON.stringify(infos, null, 4)}${EOL}`);
-    console.log(chalk.green(`Finished. Results were written to "${chalk.bold(config.output)}"`));
+    console.log(clc.green(`Finished. Results were written to "${clc.bold(config.output)}"`));
 }

@@ -1,5 +1,6 @@
 {
     "name": "package-one",
     "homepage": "https://packageOne.de",
-    "license": "MIT1"
+    "license": "MIT1",
+    "version": "1.0.0"
 }

@@ -1,5 +1,6 @@
 {
     "name": "package-two",
     "homepage": "https://packageTwo.de",
-    "license": "MIT2"
+    "license": "MIT2",
+    "version": "2.0.0"
 }
